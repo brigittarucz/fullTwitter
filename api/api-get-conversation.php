@@ -4,25 +4,20 @@ session_start();
 
 // TODO: validate session id
 
-if(!isset($_SESSION['userId'])) { sendError(400, 'session user id not set', __LINE__); };
-if(strlen($_SESSION['userId']) != 19) { sendError(400, 'session user id invalid', __LINE__); };
-
+if(!isset($_SESSION['id'])) { sendError(400, 'session user id not set', __LINE__); };
 if(!isset($_POST['receiverId'])) { sendError(400, 'receiver id not set', __LINE__); };
-if(strlen($_POST['receiverId']) != 19) { sendError(400, 'receiver id invalid', __LINE__); };
-
 
 require_once(__DIR__.'/../database/arangodb.php');
 use ArangoDBClient\Statement as ArangoStatement;
 
-
 try {
 
     $statementGetReceiver = new ArangoStatement(
-        $db,
+        $dbArango,
         [
             'query' => 'RETURN DOCUMENT(@user)',
             'bindVars' => [
-                'user' => $_POST['receiverId']
+                'user' => "twitterUsersV2/".$_POST['receiverId']
             ]
         ]
     );
@@ -30,10 +25,10 @@ try {
     $cursorGetReceiver = $statementGetReceiver->execute();
     $oDataReceiver = $cursorGetReceiver->getAll();
 
-    $apiConversationData["receiverId"] = $oDataReceiver[0]->getId();
+    $apiConversationData["receiverId"] = $oDataReceiver[0]->getKey();
     $apiConversationData["receiverImage"] = $oDataReceiver[0]->profileImage;
+    $apiConversationData["fullName"] = $oDataReceiver[0]->fullName;
     $apiConversationData["username"] = $oDataReceiver[0]->username;
-    $apiConversationData["usernameAt"] = $oDataReceiver[0]->usernameAt;
     $apiConversationData["following"] = $oDataReceiver[0]->following;
     $apiConversationData["followers"] = $oDataReceiver[0]->followers;
 
@@ -43,7 +38,11 @@ try {
             $statementGetChatHistory = new ArangoStatement(
                 $db,
                 [
-                    'query' => 'FOR message IN tweeterChats FILTER message.chatId == @chatId SORT message.timestamp DESC RETURN { "messageBody": message.message, "receiverId": message.receiverId, "messageTimestamp": message.timestamp}',
+                    'query' => 'FOR message IN twitterChatsV2 FILTER message.chatId == @chatId 
+                                SORT message.timestamp DESC 
+                                LIMIT 15 
+                                RETURN { "messageBody": message.message, "receiverId": message.receiverId, 
+                                         "messageTimestamp": message.timestamp}',
                     'bindVars' => [
                         'chatId' => $_POST['chatId']
                     ]

@@ -9,8 +9,7 @@ async function sendMessage() {
     });
 
     var sResponse = await conn.json();
-    console.log(sResponse);
-
+    // console.log(sResponse);
     if (conn.status == 201) {
         var htmlContainer = document.querySelector(".middle_texts-container");
 
@@ -77,8 +76,10 @@ async function buildViewWrite(userEvent) {
         body: form
     })
 
+    
     var sResponse = await conn.text();
-    console.log(JSON.parse(sResponse));
+    // console.log(sResponse);
+    // console.log(JSON.parse(sResponse));
 
     var receiverData = JSON.parse(sResponse);
     if (!document.querySelector(".middle_write-header")) {
@@ -89,17 +90,17 @@ async function buildViewWrite(userEvent) {
         <div class="middle_write-header"> 
           <a href="/return" onclick="returnWriteMessage(); return false;"><svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue"><g><path d="M20 11H7.414l4.293-4.293c.39-.39.39-1.023 0-1.414s-1.023-.39-1.414 0l-6 6c-.39.39-.39 1.023 0 1.414l6 6c.195.195.45.293.707.293s.512-.098.707-.293c.39-.39.39-1.023 0-1.414L7.414 13H20c.553 0 1-.447 1-1s-.447-1-1-1z"></path></g></svg></a>
           <div class="article_write-image">
-            <img src="` + (receiverData.receiverImage === "" ? "profile.png" : receiverData.receiverImage) + `" alt="">
+            <img src="` + (receiverData.receiverImage === "" ? "/media/profile-placeholder.png" : receiverData.receiverImage) + `" alt="">
           </div>
           <div>
-            <p class="article_write-username">${receiverData.username}</p>
-            <p class="article_write-at">@${receiverData.usernameAt}</p>
+            <p class="article_write-username">${receiverData.fullName}</p>
+            <p class="article_write-at">@${receiverData.username}</p>
           </div>
         </div>
         <div class="middle_write-user_details">
           <div>
-            <p class="p_write-username">${receiverData.username}</p>
-            <p class="p_write-at">@${receiverData.usernameAt}</p>
+            <p class="p_write-username">${receiverData.fullName}</p>
+            <p class="p_write-at">@${receiverData.username}</p>
           </div>
           <div>
             <p class="p_write-following">${receiverData.following} following</p>
@@ -123,9 +124,9 @@ async function buildViewWrite(userEvent) {
         </div>
         <form onsubmit="sendMessage(); return false;">
           <input type="text" name="receiverId" hidden value="${receiverData.receiverId}">
+          <input type="text" name="receiverFullname" hidden value="${receiverData.fullName}">
           <input type="text" name="receiverUsername" hidden value="${receiverData.username}">
-          <input type="text" name="receiverAt" hidden value="${receiverData.usernameAt}">
-          <input type="text" name="receiverImage" hidden value="` + (receiverData.receiverImage === "" ? "profile.png" : receiverData.receiverImage) + `">
+          <input type="text" name="receiverImage" hidden value="${receiverData.receiverImage}">
           <textarea type="text" style="resize:none; width: 22vw;">Hey you how has it been going?</textarea>
           <button type="submit"><svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue"><g><path d="M21.13 11.358L3.614 2.108c-.29-.152-.64-.102-.873.126-.23.226-.293.577-.15.868l4.362 8.92-4.362 8.92c-.143.292-.08.643.15.868.145.14.333.212.523.212.12 0 .24-.028.35-.087l17.517-9.25c.245-.13.4-.386.4-.664s-.155-.532-.4-.662zM4.948 4.51l12.804 6.762H8.255l-3.307-6.76zm3.307 8.26h9.498L4.948 19.535l3.307-6.763z"></path></g></svg></button>
         </form>
@@ -187,6 +188,7 @@ async function searchUser() {
 
         var sResponse = await conn.text();
 
+        // console.log(sResponse);
         var aSearchResults = JSON.parse(sResponse);
         var htmlContainer = document.querySelector(".middle_messages-container");
 
@@ -195,14 +197,14 @@ async function searchUser() {
 
             aSearchResults.forEach(searchResult => {
                 var userMessage = `
-          <a href="/message" onclick="getViewWrite(); return false;" data-messageto="${searchResult.id}">
+          <a href="/message" onclick="getViewWrite(); return false;" data-messageto="${searchResult.key}">
               <article class="article_message"> 
                 <div class="article_message-image">
-                  <img src="${searchResult.profileImage}" alt="">
+                  <img src="`+ (searchResult.profileImage == "" ? "media/profile-placeholder.png" : searchResult.profileImage)  +`" alt="">
                 </div>
                 <div>
-                  <p class="article_message-username">${searchResult.username}</p>
-                  <p class="article_message-at">@${searchResult.usernameAt}</p>
+                  <p class="article_message-username">${searchResult.fullName}</p>
+                  <p class="article_message-at">@${searchResult.username}</p>
                 </div>
               </article>
           </a>
@@ -212,14 +214,12 @@ async function searchUser() {
             })
 
         } else {
-            htmlContainer.innerHTML = "Your search query did not yield any results. Consider modifying your search.";
+            htmlContainer.innerHTML = "Your search query did not yield any results. Consider modifying your search and have minimum 3 letters.";
         }
     } else {
         getConversations();
     }
 }
-
-
 
 
 async function getConversations() {
@@ -229,13 +229,12 @@ async function getConversations() {
     })
 
     var sResponse = await conn.text();
-
+    console.log(sResponse);
     if (conn.status == 200) {
         var htmlContainer = document.querySelector(".middle_messages-container");
         htmlContainer.innerHTML = "";
 
         var jUserMessages = JSON.parse(sResponse);
-
         // TODO: format date
         // TODO: add random image picker array
 
@@ -244,11 +243,11 @@ async function getConversations() {
       <a href="/message" onclick="getViewWrite(); return false;" data-messageto="${jUserMessage.receiverId}" data-chatid="${jUserMessage.chatId}">
             <article class="article_message"> 
               <div class="article_message-image">
-                <img src="${jUserMessage.receiverImage}" alt="">
+                <img src="` + (jUserMessage.receiverImage === "" ? "/media/profile-placeholder.png" : jUserMessage.receiverImage) + `" alt="">
               </div>
               <div>
-                <p class="article_message-username">${jUserMessage.receiverUsername}</p>
-                <p class="article_message-at">@${jUserMessage.receiverAt}</p>
+                <p class="article_message-username">${jUserMessage.receiverFullName}</p>
+                <p class="article_message-at">@${jUserMessage.receiverUsername}</p>
               </div>
               <div> 
                 <p class="last_message-date">${jUserMessage.lastMessageDate}</p>

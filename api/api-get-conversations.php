@@ -3,8 +3,7 @@
 session_start();
 
 // TODO: validate session id
-if(!isset($_SESSION['userId'])) { sendError(400, 'session user id not set', __LINE__); };
-if(strlen($_SESSION['userId']) != 19) { sendError(400, 'session user id invalid', __LINE__); };
+if(!isset($_SESSION['id'])) { sendError(400, 'session user id not set', __LINE__); };
 
 require_once(__DIR__.'/../database/arangodb.php');
 use ArangoDBClient\Statement as ArangoStatement;
@@ -12,11 +11,11 @@ use ArangoDBClient\Statement as ArangoStatement;
 try {
 
     $statementGetUserConversations = new ArangoStatement(
-        $db, 
+        $dbArango, 
         [
             'query' => 'RETURN DOCUMENT(@userId)',
             'bindVars' => [
-                'userId' => $_SESSION["userId"]
+                'userId' => "twitterUsersV2/".$_SESSION["id"]
             ]
         ]
     );

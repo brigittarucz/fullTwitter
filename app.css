@@ -1215,7 +1215,31 @@ div#popup-post a {
   background-color: rgba(0,0,0,0.4); 
 }
 
-/* Modal Content/Box */
+.modal-profile_content {
+  padding-right: 1rem;
+  border-right: 1px solid var(--lightgrey-color1);
+  overflow-y: auto;
+  margin-left: -1rem;
+  padding-left: 1rem;
+}
+
+.modal-profile_content-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-profile_content-form::-webkit-scrollbar-track {
+  background: var(--lightgrey-color1);
+}
+
+.modal-profile_content-form::-webkit-scrollbar-thumb {
+  background: var(--darkgrey-color2);
+}
+
+.modal-profile_content-form {
+  height: 30vh;
+  overflow-y: scroll;
+}
+
 .modal-profile_content {
   background-color: white;
   overflow: auto; 
@@ -1223,7 +1247,7 @@ div#popup-post a {
   padding: 1rem;
   margin: 5% auto; /* 15% from the top and centered */
   border: 1px solid #888;
-  width: 40%; /* Could be more or less, depending on screen size */
+  width: 45%; /* Could be more or less, depending on screen size */
 }
 
 .modal-profile_content-actions {
@@ -1269,7 +1293,7 @@ div#popup-post a {
 }
 
 .modal-profile_content .profile-img {
-  width: 25%;
+  width: 20%;
   border-radius: 50%;
   padding: 3px;
   background-color: white;
@@ -1277,6 +1301,7 @@ div#popup-post a {
 
 .modal-profile_content .profile-img img{
   width: 100%;
+  object-fit: cover;
   border-radius: 50%;
   filter: brightness(80%);
 }
@@ -1311,6 +1336,7 @@ div#popup-post a {
 
 .modal-profile_content .cover-img {
   width: 100%;
+  object-fit: cover;
 }
 
 .modal-profile_content select {
@@ -1327,7 +1353,7 @@ div#popup-post a {
   padding: 0px 0.5rem;
   /* border-left: 1px solid rgba(0, 0, 0, 0.1);
   border-right: 1px solid rgba(0, 0, 0, 0.1); */
-  font-family: 'Oxygen', sans-serif;
+  /* font-family: 'Oxygen', sans-serif; */
 }
 
 .view_messages a {
@@ -1377,7 +1403,7 @@ div#popup-post a {
 
 
 .middle_messages-search div {
-  background-color: var(--lightblue-color);
+  background-color: rgb(232, 240, 254);
   border-radius: 1rem;
 }
 
@@ -1389,7 +1415,8 @@ div#popup-post a {
 .middle_messages-search input {
   width: 80%;
   height: 30px;
-  background-color: var(--lightblue-color);
+  margin-left: 1rem;
+  background-color: rgb(232, 240, 254);
   border: 0;
   color: var(--darkblue-bgmodal-color);
 }

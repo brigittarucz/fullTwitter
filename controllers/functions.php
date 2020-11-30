@@ -177,8 +177,6 @@ function createUser($email, $password, $name, $birthdate) {
     return json_encode(getUser($dbMaria->lastInsertId()));
 }
 
-// ALRIGHT
-
 function setUser($id, $fullName, $username) {
     $user['_key'] = $id;
     $user['fullName'] = $fullName;

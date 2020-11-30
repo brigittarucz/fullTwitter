@@ -106,7 +106,7 @@
             session_start();
             $_SESSION['id'] = $validUser->user_id;
             $_SESSION['name'] = $validUser->user_username;
-
+            
             print_r($validUser);
 
             header("Location: home");

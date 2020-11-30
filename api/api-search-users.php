@@ -10,9 +10,9 @@ use ArangoDBClient\Statement as ArangoStatement;
 try {
 
     $statementSearchUsers = new ArangoStatement(
-        $db,
+        $dbArango,
         [
-            'query' => 'FOR user IN tweeterUsers RETURN {"id": user._id, "firstName": user.firstName, "lastName": user.lastName, "username": user.username, "usernameAt": user.usernameAt, "profileImage": user.profileImage}'
+            'query' => 'FOR user IN twitterUsersV2 RETURN {"key": user._key, "fullName": user.fullName, "username": user.username, "profileImage": user.profileImage}'
         ]
     );
 

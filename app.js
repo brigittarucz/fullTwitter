@@ -666,6 +666,10 @@ function changeView() {
             domElement.style.display = "none";
         })
 
+        if(sRoute == 'messages') {
+            getConversations();
+        }
+        
         var previouslyClicked = select("a.active");
         if (previouslyClicked !== event.target) {
 

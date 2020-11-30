@@ -526,76 +526,78 @@
 
   <div id="modal-profile">
 
+  <div>
     <div class="modal-profile_content">
-      <form id="formProfile" onsubmit="updateProfile(); return false;" method="POST">
-        <div class="modal-profile_content-actions">
-          <div>
-            <a href="/" onclick="closeModal(); return false;" data-queryElement="#modal-profile">
-              <svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue">
-                <g>
-                  <path d="M13.414 12l5.793-5.793c.39-.39.39-1.023 0-1.414s-1.023-.39-1.414 0L12 10.586 6.207 4.793c-.39-.39-1.023-.39-1.414 0s-.39 1.023 0 1.414L10.586 12l-5.793 5.793c-.39.39-.39 1.023 0 1.414.195.195.45.293.707.293s.512-.098.707-.293L12 13.414l5.793 5.793c.195.195.45.293.707.293s.512-.098.707-.293c.39-.39.39-1.023 0-1.414L13.414 12z">
-                  </path>
-                </g>
-              </svg>
-            </a>
-            <h3 class="text-lg-dark-900">Edit profile</h3>
-          </div>
-          <button class="btn btn-tweet" type="submit" onclick="closeModal()" data-queryElement="#modal-profile">Save</button>
-        </div>
-        <div class="modal-profile_content-cover">
-          <img class="cover-img" src="media/cover.jpg" alt="">
-        </div>
-        <div class="modal-profile_content-profile">
-          <div>
-            <div class="profile-img">
-              <img src="media/profile.jpg" alt="">
+        <form id="formProfile" onsubmit="updateProfile(); return false;" method="POST">
+          <div class="modal-profile_content-actions">
+            <div>
+              <a href="/" onclick="closeModal(); return false;" data-queryElement="#modal-profile">
+                <svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue">
+                  <g>
+                    <path d="M13.414 12l5.793-5.793c.39-.39.39-1.023 0-1.414s-1.023-.39-1.414 0L12 10.586 6.207 4.793c-.39-.39-1.023-.39-1.414 0s-.39 1.023 0 1.414L10.586 12l-5.793 5.793c-.39.39-.39 1.023 0 1.414.195.195.45.293.707.293s.512-.098.707-.293L12 13.414l5.793 5.793c.195.195.45.293.707.293s.512-.098.707-.293c.39-.39.39-1.023 0-1.414L13.414 12z">
+                    </path>
+                  </g>
+                </svg>
+              </a>
+              <h3 class="text-lg-dark-900">Edit profile</h3>
             </div>
-            <div class="upload-image">
-              <input class="select-img" type="file" name="profileImage">
-              <svg class="select-icon" viewBox="0 0 24 24" class="r-jwli3a r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue">
-                <g>
-                  <path d="M19.708 22H4.292C3.028 22 2 20.972 2 19.708V7.375C2 6.11 3.028 5.083 4.292 5.083h2.146C7.633 3.17 9.722 2 12 2c2.277 0 4.367 1.17 5.562 3.083h2.146C20.972 5.083 22 6.11 22 7.375v12.333C22 20.972 20.972 22 19.708 22zM4.292 6.583c-.437 0-.792.355-.792.792v12.333c0 .437.355.792.792.792h15.416c.437 0 .792-.355.792-.792V7.375c0-.437-.355-.792-.792-.792h-2.45c-.317.05-.632-.095-.782-.382-.88-1.665-2.594-2.7-4.476-2.7-1.883 0-3.598 1.035-4.476 2.702-.16.302-.502.46-.833.38H4.293z"></path>
-                  <path d="M12 8.167c-2.68 0-4.86 2.18-4.86 4.86s2.18 4.86 4.86 4.86 4.86-2.18 4.86-4.86-2.18-4.86-4.86-4.86zm2 5.583h-1.25V15c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-1.25H10c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h1.25V11c0-.414.336-.75.75-.75s.75.336.75.75v1.25H14c.414 0 .75.336.75.75s-.336.75-.75.75z"></path>
-                </g>
-              </svg>
+            <button class="btn btn-tweet" type="submit" onclick="closeModal()" data-queryElement="#modal-profile">Save</button>
+          </div>
+          <div class="modal-profile_content-cover">
+            <img class="cover-img" src="media/cover.jpg" alt="">
+          </div>
+          <div class="modal-profile_content-profile">
+            <div>
+              <div class="profile-img">
+                <img src="media/profile.jpg" alt="">
+              </div>
+              <div class="upload-image">
+                <input class="select-img" type="file" name="profileImage">
+                <svg class="select-icon" viewBox="0 0 24 24" class="r-jwli3a r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue">
+                  <g>
+                    <path d="M19.708 22H4.292C3.028 22 2 20.972 2 19.708V7.375C2 6.11 3.028 5.083 4.292 5.083h2.146C7.633 3.17 9.722 2 12 2c2.277 0 4.367 1.17 5.562 3.083h2.146C20.972 5.083 22 6.11 22 7.375v12.333C22 20.972 20.972 22 19.708 22zM4.292 6.583c-.437 0-.792.355-.792.792v12.333c0 .437.355.792.792.792h15.416c.437 0 .792-.355.792-.792V7.375c0-.437-.355-.792-.792-.792h-2.45c-.317.05-.632-.095-.782-.382-.88-1.665-2.594-2.7-4.476-2.7-1.883 0-3.598 1.035-4.476 2.702-.16.302-.502.46-.833.38H4.293z"></path>
+                    <path d="M12 8.167c-2.68 0-4.86 2.18-4.86 4.86s2.18 4.86 4.86 4.86 4.86-2.18 4.86-4.86-2.18-4.86-4.86-4.86zm2 5.583h-1.25V15c0 .414-.336.75-.75.75s-.75-.336-.75-.75v-1.25H10c-.414 0-.75-.336-.75-.75s.336-.75.75-.75h1.25V11c0-.414.336-.75.75-.75s.75.336.75.75v1.25H14c.414 0 .75.336.75.75s-.336.75-.75.75z"></path>
+                  </g>
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="modal-profile_content-form">
-          <div class="form-group">
-            <label class="text-sm">Full Name</label>
-            <input type="text" disabled value="Brigitta Rucz">
+          <div class="modal-profile_content-form">
+            <div class="form-group">
+              <label class="text-sm">Full Name</label>
+              <input type="text" disabled value="Brigitta Rucz">
+            </div>
+            <div class="form-group">
+              <label class="text-sm">Bio</label>
+              <input type="text" disabled placeholder="Add your bio">
+            </div>
+            <div class="form-group">
+              <label class="text-sm">Country</label>
+              <select name="userCountry">
+                <!-- Add countries here -->
+                <option>Romania</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="text-sm">Gender</label>
+              <select name="userGender">
+                <!-- Add genders here -->
+                <option>Female</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="text-sm">Website</label>
+              <input type="text" disabled value="Add your website">
+            </div>
           </div>
-          <div class="form-group">
-            <label class="text-sm">Bio</label>
-            <input type="text" disabled placeholder="Add your bio">
-          </div>
-          <div class="form-group">
-            <label class="text-sm">Country</label>
-            <select name="userCountry">
-              <!-- Add countries here -->
-              <option>Romania</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="text-sm">Gender</label>
-            <select name="userGender">
-              <!-- Add genders here -->
-              <option>Female</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="text-sm">Website</label>
-            <input type="text" disabled value="Add your website">
-          </div>
-        </div>
-      </form>
-    </div>
-
+        </form>
+      </div>
+  </div>
+  
   </div>
 
-  <script type="text/javascript" src="app.js"></script>
   <script type="text/javascript" src="messaging.js"></script>
+  <script type="text/javascript" src="app.js"></script>
 </body>
 
 </html>

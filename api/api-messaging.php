@@ -3,171 +3,182 @@
 session_start();
 
 // Comment these lines in production
-// $_SESSION['userId'] = "tweeterUsers/152709";
-
+// $_SESSION['id'] = 12;
 
 // API may fail without image set
 
-if(isset($_POST['testMessageId'])) {
-    $_SESSION['userId'] = "tweeterUsers/152709";
-    $_SESSION['username'] = "MyUsername";
-    $_SESSION['created'] = "2020-10-16 16:40:11";
-    $_SESSION['usernameAt'] = "myusernaaaame@";
-    $_SESSION['profileImage'] = "profile.png";
-    $_POST['receiverId'] = "tweeterUsers/241806";
-}
+// GET user from Arango 
 
-if(!isset($_SESSION['userId'])) { sendError(400, 'session user id not set', __LINE__); };
-if(strlen($_SESSION['userId']) != 19) { sendError(400, 'session user id invalid', __LINE__); };
-if(!isset($_SESSION['username'])) { sendError(400, 'session username not set', __LINE__); };
-if(!isset($_SESSION['created'])) { sendError(400, 'session user created date not set', __LINE__); };
-if(!isset($_SESSION['usernameAt'])) { sendError(400, 'session username @ not set', __LINE__); };
-if(!isset($_SESSION['profileImage'])) { sendError(400, 'session image not set', __LINE__); };
+if(!isset($_SESSION['id'])) { sendError(400, 'session user id not set', __LINE__); };
 
 if(!isset($_POST['receiverId'])) { sendError(400, 'receiver id not set', __LINE__); };
+if(!isset($_POST['receiverFullname'])) { sendError(400, 'receiver full name not set', __LINE__); };
 if(!isset($_POST['receiverUsername'])) { sendError(400, 'receiver username not set', __LINE__); };
-if(!isset($_POST['receiverAt'])) { sendError(400, 'receiver @ not set', __LINE__); };
-if(strlen($_POST['receiverId']) != 19 ) { sendError(400, 'receiver id invalid', __LINE__); };
+if(!isset($_POST['receiverImage'])) { sendError(400, 'receiver image not set', __LINE__); };
 if(!isset($_POST['messageBody'])) { sendError(400, 'message not set', __LINE__); };
 if(!strlen($_POST['messageBody'])) { sendError(400, 'message body must not be empty', __LINE__); };
 if(!(strlen($_POST['messageBody']) < 3500)) { sendError(400, 'message body must be less than 3500 chars', __LINE__); };
-if(!isset($_POST['receiverImage'])) { sendError(400, 'receiver image not set', __LINE__); };
 
-if(!($_POST['receiverId'] != $_SESSION['userId'])) { sendError(400, 'receiver and session user id must be different', __LINE__); };
+// The following line can make or break the API logic
+if(!($_POST['receiverId'] != $_SESSION['id'])) { sendError(400, 'receiver and session user id must be different', __LINE__); };
+
+$_POST['receiverId'] = intVal($_POST['receiverId']);
 
 require_once(__DIR__.'/../database/arangodb.php');
 use ArangoDBClient\Statement as ArangoStatement;
 
 try {
-
-    // TODO: check if conversation exists
-      
-    try {
-        $statementGetChatId = new ArangoStatement(
-            $db,
-            [
-                'query' => 'FOR user IN tweeterUsers FILTER user._id == @userId RETURN user',
-                'bindVars' => [
-                    'userId' => $_SESSION['userId']
-                ]
+        
+    $statementGetUserSession = new ArangoStatement(
+        $dbArango,
+        [
+            'query' => 'RETURN DOCUMENT(@user)',
+            'bindVars' => [
+                'user' => "twitterUsersV2/".$_SESSION['id']
             ]
-        );
+        ]
+    );
 
-        $cursorGetChatId = $statementGetChatId->execute();
-        $dataGetChatId = $cursorGetChatId->getAll();
-        $aChats = $dataGetChatId[0]->chatWith;
+    $cursorGetUserSession = $statementGetUserSession->execute();
+    $oDataUserSession = $cursorGetUserSession->getAll();
 
-        $sChatId = 0;
+    try {
 
-        if( sizeof($aChats) != 0 ) {
-            foreach($aChats as $oChat) {
-            
-                if($oChat["receiverId"] == $_POST['receiverId']) {
-                    $sChatId = $oChat["chatId"];
-                    
-                    $apiMessagingResponse["chatStatus"] = "both chats already exist";
-                    $apiMessagingResponse["wasChatWithEmpty"] = 0;
-                    $apiMessagingResponse["updateStatusSender"] = 0;
-                    $apiMessagingResponse["updateStatusReceiver"] = 0;
-                    break;
+        // TODO: check if conversation exists
+
+        try {
+            $statementGetChatId = new ArangoStatement(
+                $dbArango,
+                [
+                    'query' => 'FOR user IN twitterUsersV2 FILTER user._id == @userId RETURN user',
+                    'bindVars' => [
+                        'userId' => "twitterUsersV2/".$_SESSION['id']
+                    ]
+                ]
+            );
+
+            $cursorGetChatId = $statementGetChatId->execute();
+            $dataGetChatId = $cursorGetChatId->getAll();
+
+            $aChats = $dataGetChatId[0]->chatWith;
+
+            $sChatId = 0;
+
+            if (
+                sizeof($aChats) != 0
+            ) {
+                foreach ($aChats as $oChat) {
+
+                    if ($oChat["receiverId"] == $_POST['receiverId']) {
+                        $sChatId = $oChat["chatId"];
+
+                        $apiMessagingResponse["chatStatus"] = "both chats already exist";
+                        $apiMessagingResponse["wasChatWithEmpty"] = 0;
+                        $apiMessagingResponse["updateStatusSender"] = 0;
+                        $apiMessagingResponse["updateStatusReceiver"] = 0;
+                        break;
+                    }
                 }
-
-            }
-
-            if(!($sChatId)) {
-                $sChatId = 'chat'.uniqid();
                 
+
+                if (!($sChatId)) {
+                    $sChatId = 'chat' . uniqid();
+
+                    // TODO: create chat in sender's document 
+                    // TODO: create chat in receiver's document
+
+                    $updateStatusSender = updateUser($sChatId, $dbArango, $_SESSION['id'], $_POST['receiverId'], $_POST['receiverFullname'], $_POST['receiverUsername'], $_POST['receiverImage']);
+
+                    $updateStatusReceiver = updateUser($sChatId, $dbArango, $_POST['receiverId'], $_SESSION['id'], $oDataUserSession[0]->fullName, $oDataUserSession[0]->username, $oDataUserSession[0]->profileImage);
+
+                    $apiMessagingResponse["chatStatus"] = "both chats were created";
+                    $apiMessagingResponse["wasChatWithEmpty"] = 0;
+                    $apiMessagingResponse["updateStatusSender"] = json_decode(stripslashes($updateStatusSender));
+                    $apiMessagingResponse["updateStatusReceiver"] = json_decode(stripslashes($updateStatusReceiver));
+                }
+            } else {
+
+                $sChatId = 'chat' . uniqid();
+
                 // TODO: create chat in sender's document 
                 // TODO: create chat in receiver's document
 
-                $updateStatusSender = updateUser($sChatId, $db, $_SESSION['userId'], $_POST['receiverId'], $_POST['receiverUsername'], $_POST['receiverAt'], $_POST['receiverImage']);
+                
+                $updateStatusSender = updateUser($sChatId, $dbArango, $_SESSION['id'], $_POST['receiverId'], $_POST['receiverFullname'], $_POST['receiverUsername'], $_POST['receiverImage']);
 
-                $updateStatusReceiver = updateUser($sChatId, $db, $_POST['receiverId'], $_SESSION['userId'], $_SESSION['username'], $_SESSION['usernameAt'], $_SESSION['profileImage']);
+                $updateStatusReceiver = updateUser($sChatId, $dbArango, $_POST['receiverId'],  $_SESSION['id'],  $oDataUserSession[0]->fullName, $oDataUserSession[0]->username, $oDataUserSession[0]->profileImage);
 
                 $apiMessagingResponse["chatStatus"] = "both chats were created";
-                $apiMessagingResponse["wasChatWithEmpty"] = 0;
+                $apiMessagingResponse["wasChatWithEmpty"] = 1;
                 $apiMessagingResponse["updateStatusSender"] = json_decode(stripslashes($updateStatusSender));
                 $apiMessagingResponse["updateStatusReceiver"] = json_decode(stripslashes($updateStatusReceiver));
-        
-            }
-        } else {
-            
-            $sChatId = 'chat'.uniqid();
-        
-            // TODO: create chat in sender's document 
-            // TODO: create chat in receiver's document
+            };
+        } catch (Exception $ex) {
+            sendError(500, 'system under maintainance', $ex);
+        }
 
-            $updateStatusSender = updateUser($sChatId, $db, $_SESSION['userId'], $_POST['receiverId'], $_POST['receiverUsername'], $_POST['receiverAt'], $_POST['receiverImage']);
+        // 500 * 1 000 000 users each with 300 bytes/message in document = 150GB
 
-            $updateStatusReceiver = updateUser($sChatId, $db, $_POST['receiverId'], $_SESSION['userId'], $_SESSION['username'], $_SESSION['usernameAt'], $_SESSION['profileImage']);
+        // TODO: get messages + messages count + add proper chat Id
+        $aMessages = getMessages($dbArango);
 
-            $apiMessagingResponse["chatStatus"] = "both chats were created";
-            $apiMessagingResponse["wasChatWithEmpty"] = 1;
-            $apiMessagingResponse["updateStatusSender"] = json_decode(stripslashes($updateStatusSender));
-            $apiMessagingResponse["updateStatusReceiver"] = json_decode(stripslashes($updateStatusReceiver));
+        // TODO: create message 
+        $iChatMessageCount = sizeof($aMessages);
+       
+        $message = createMessage($sChatId, $iChatMessageCount, $oDataUserSession[0]);
 
-        };
-    } catch(Exception $ex) {
+        try {
+            $statementInsertMessage = new ArangoStatement(
+                $dbArango,
+                [
+                    'query' => 'INSERT @message INTO twitterChatsV2 RETURN NEW',
+                    'bindVars' => [
+                        'message' => $message
+                    ]
+                ]
+            );
+
+            $cursorInsertMessage = $statementInsertMessage->execute();
+            $oDataMessage = $cursorInsertMessage->getAll();
+
+            $apiMessagingResponse["message"] = [
+                "status" => "message with id " . $oDataMessage[0]->getId() . " was created",
+                "message" => $oDataMessage[0]->message,
+                "created" => $oDataMessage[0]->timestamp
+            ];
+        } catch (Exception $ex) {
+            sendError(500, 'cannot save message', __LINE__);
+        }
+
+        // TODO: seed with 499 messages and create deletion of documents
+
+        // TODO: add last message of chat in both users
+
+        $apiMessagingResponse["lastMessageSenderSaved"] = updateLastMessage($dbArango, $_SESSION['id'], $_POST['receiverId']);
+        $apiMessagingResponse["lastMessageReceiverSaved"] = updateLastMessage($dbArango, $_POST['receiverId'], $_SESSION['id'], "Receiver");
+
+        // TODO: send to client & refresh
+
+        http_response_code(201);
+        header('Content-type: application/json');
+        echo json_encode($apiMessagingResponse);
+        exit();
+    } catch (Exception $ex) {
         sendError(500, 'system under maintainance', $ex);
     }
 
-    // 500 * 1 000 000 users each with 300 bytes/message in document = 150GB
-
-    // TODO: get messages + messages count + add proper chat Id
-    $aMessages = getMessages($db);
-
-    // TODO: create message 
-    $iChatMessageCount = sizeof($aMessages);
-    $message = createMessage($sChatId, $iChatMessageCount);
-
-    try {
-        $statementInsertMessage = new ArangoStatement(
-            $db,
-            [
-                'query' => 'INSERT @message INTO tweeterChats RETURN NEW',
-                'bindVars' => [
-                    'message' => $message
-                ]
-            ]
-        );
-
-        $cursorInsertMessage = $statementInsertMessage->execute();
-        $oDataMessage = $cursorInsertMessage->getAll();
-
-        $apiMessagingResponse["message"] = [
-            "status" => "message with id ".$oDataMessage[0]->getId()." was created",
-            "message" => $oDataMessage[0]->message,
-            "created" => $oDataMessage[0]->timestamp
-        ];
-    } catch(Exception $ex) {
-        sendError(500, 'cannot save message', __LINE__);
-    }
-
-    // TODO: seed with 499 messages and create deletion of documents
-
-    // TODO: add last message of chat in both users
-
-    $apiMessagingResponse["lastMessageSenderSaved"] = updateLastMessage($db, $_SESSION['userId'], $_POST['receiverId']);
-    $apiMessagingResponse["lastMessageReceiverSaved"] = updateLastMessage($db, $_POST['receiverId'], $_SESSION['userId'], "Receiver");
-   
-    // TODO: send to client & refresh
-
-    http_response_code(201);
-    header('Content-type: application/json');
-    echo json_encode($apiMessagingResponse);
-    exit();
-
+    var_dump($oDataReceiver);
 } catch (Exception $ex) {
     sendError(500, 'system under maintainance', $ex);
 }
 
-function createMessage($sChatId, $chatMessageCount) {
-    $message["receiverId"] = $_POST['receiverId'];
-    $message["senderId"] = $_SESSION['userId'];
+function createMessage($sChatId, $chatMessageCount, $oDataUserSession) {
     $message["chatId"] = $sChatId;
-    $messages["chatMessageCount"] = $chatMessageCount;
-    $message["senderUsername"] = $_SESSION['username'];
-    $message["senderCreated"] = $_SESSION['created'];
+    $message["chatMessageCount"] = $chatMessageCount;
+    $message["receiverId"] = $_POST['receiverId'];
+    $message["senderId"] = $_SESSION['id'];
+    $message["senderUsername"] = $oDataUserSession->username;
+    $message["senderCreated"] = $oDataUserSession->created;
     $date = new DateTime();
     $date = $date->format('Y-m-d H:i:s');
     $message["timestamp"] = $date;
@@ -182,9 +193,9 @@ function getMessages($db) {
         $statementGetMessages = new ArangoStatement(
             $db,
             [
-                'query' => 'FOR message IN tweeterChats FILTER message.receiverId == @receiverId AND message.senderId == @senderId OR message.receiverId == @senderId AND message.senderId == @receiverId RETURN message.message',
+                'query' => 'FOR message IN twitterChatsV2 FILTER message.receiverId == @receiverId AND message.senderId == @senderId OR message.receiverId == @senderId AND message.senderId == @receiverId RETURN message.message',
                 'bindVars' => [
-                    'senderId' => $_SESSION['userId'],
+                    'senderId' => $_SESSION['id'],
                     'receiverId' => $_POST['receiverId']
                 ]
             ]
@@ -214,7 +225,7 @@ function updateLastMessage($db, $senderId, $receiverId) {
             [
                 'query' => 'RETURN DOCUMENT(@user)',
                 'bindVars' => [
-                    'user' => $senderId
+                    'user' => "twitterUsersV2/".$senderId
                 ]
             ]
         );
@@ -235,9 +246,9 @@ function updateLastMessage($db, $senderId, $receiverId) {
                     $statementUpdateUserChat = new ArangoStatement(
                         $db,
                         [
-                            'query' => 'UPDATE @user WITH {"chatWith": @newChat} IN tweeterUsers RETURN NEW',
+                            'query' => 'UPDATE @user WITH {"chatWith": @newChat} IN twitterUsersV2 RETURN NEW',
                             'bindVars' => [
-                                'user' => substr($senderId, 13, 18),
+                                'user' => "".$senderId,
                                 'newChat' => $userChats
                             ]
                         ]
@@ -266,7 +277,7 @@ function updateLastMessage($db, $senderId, $receiverId) {
 
 }
 
-function updateUser($chatId, $db, $userSender, $userReceiver, $receiverUsername, $receiverAt, $receiverImage) {
+function updateUser($chatId, $db, $userSender, $userReceiver, $receiverFullname, $receiverUsername, $receiverImage) {
           
     try {
         $statementGetUser = new ArangoStatement(
@@ -274,7 +285,7 @@ function updateUser($chatId, $db, $userSender, $userReceiver, $receiverUsername,
             [
                 'query' => 'RETURN DOCUMENT(@senderId)',
                 'bindVars' => [
-                    'senderId' => $userSender // $_SESSION['userId']
+                    'senderId' => "twitterUsersV2/".$userSender // $_SESSION['userId']
                 ]
             ]
         );
@@ -287,8 +298,8 @@ function updateUser($chatId, $db, $userSender, $userReceiver, $receiverUsername,
 
         $newChat["chatId"] = $chatId;
         $newChat["receiverId"] = $userReceiver; // $_POST['receiverId'];
+        $newChat["receiverFullName"] = $receiverFullname;
         $newChat["receiverUsername"] = $receiverUsername;
-        $newChat["receiverAt"] = $receiverAt;
         $newChat["receiverImage"] = $receiverImage;
         $newChat["lastMessage"] = "";
         $newChat["lastMessageDate"] = "";
@@ -304,7 +315,7 @@ function updateUser($chatId, $db, $userSender, $userReceiver, $receiverUsername,
         $statementUpdateUser = new ArangoStatement(
             $db, 
             [
-                'query' => 'UPDATE @senderKey WITH { "chatWith": @chatUpdate } IN tweeterUsers RETURN NEW',
+                'query' => 'UPDATE @senderKey WITH { "chatWith": @chatUpdate } IN twitterUsersV2 RETURN NEW',
                 'bindVars' => [
                     'senderKey' => $sSenderKey,
                     'chatUpdate' => $aChats
@@ -315,7 +326,7 @@ function updateUser($chatId, $db, $userSender, $userReceiver, $receiverUsername,
         $cursorUpdateUser = $statementUpdateUser->execute();
         $dataGetUpdate = $cursorUpdateUser->getAll();
 
-        return '{"userChatUpdated":"'.$userSender.'", "chatListSize":'.sizeof($aChats).', "chatWith":"'.$receiverUsername.'"}';
+        return '{"userChatUpdated":"'.$userSender.'", "chatListSize":'.sizeof($aChats).', "chatWith":"'.$receiverFullname.'"}';
     } catch (Exception $ex) {
         sendError(500, "user with id $userSender cannot be updated", __LINE__);
     }
