@@ -1,0 +1,6 @@
+RewriteEngine On
+
+#Regular expression
+RewriteRule ^home$ index.php [NC]
+RewriteRule ^authenticate$ views/authentication.php [NC]
+RewriteRule ^password-reset$ views/password-reset.php [NC]
