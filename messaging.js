@@ -9,7 +9,7 @@ async function sendMessage() {
     });
 
     var sResponse = await conn.json();
-    // console.log(sResponse);
+    console.log(sResponse);
     if (conn.status == 201) {
         var htmlContainer = document.querySelector(".middle_texts-container");
 
@@ -81,6 +81,7 @@ async function buildViewWrite(userEvent) {
     // console.log(sResponse);
     // console.log(JSON.parse(sResponse));
 
+    console.log(sResponse);
     var receiverData = JSON.parse(sResponse);
     if (!document.querySelector(".middle_write-header")) {
 

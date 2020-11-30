@@ -36,7 +36,7 @@ try {
         
         try {
             $statementGetChatHistory = new ArangoStatement(
-                $db,
+                $dbArango,
                 [
                     'query' => 'FOR message IN twitterChatsV2 FILTER message.chatId == @chatId 
                                 SORT message.timestamp DESC 
