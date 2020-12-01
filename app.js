@@ -184,7 +184,7 @@ async function getTweets() {
         var formattedDate = formatDate(jTweet['tweet_created']);
         var postTag = 0;
         
-        console.log(jTweets);
+        // console.log(jTweets);
 
         let tweetBlueprint = `
         <article class="post-article" data-tweetId="${jTweet['tweet_id']}">
@@ -595,6 +595,91 @@ async function deleteTweet() {
     
 }
 
+
+async function getProfile() {
+    let sUserId = await getSession();
+
+    let connection = await fetch(
+        'api/api-get-lookups.php?id=' + sUserId,
+        {
+            "method": "GET"
+        }
+    )
+
+    let sResponse = await connection.json();
+
+    select(".profile__name-group input").value = sResponse.fullname;
+    select(".profile__country-select").innerHTML = 0;
+    select(".profile__gender-select").innerHTML = 0;
+    select(".profile__country-previous").value = sResponse.country_id;
+    select(".profile__gender-previous").value = sResponse.gender_id;
+
+    sResponse.countries.forEach(country => {
+        var option = `<option value="${country.country_id}">${country.country_name}</option>`;
+
+        select('.profile__country-select').insertAdjacentHTML('afterbegin', option);
+    })
+
+    sResponse.genders.forEach(gender => {
+        var option = `<option value="${gender.gender_id}">${gender.gender_name}</option>`;
+
+        select('.profile__gender-select').insertAdjacentHTML('afterbegin', option);
+    })
+
+    var optionGender = `<option selected value="${sResponse.gender_id}">`+ (sResponse.gender_id == "1" ? "unset" : sResponse.gender) +`</option>`;
+    select('.profile__gender-select').insertAdjacentHTML('afterbegin', optionGender);
+
+    var optionCountry = `<option selected value="${sResponse.country_id}">`+ (sResponse.country_id == "1" ? "unset" : sResponse.country) +`</option>`;
+    select('.profile__country-select').insertAdjacentHTML('afterbegin', optionCountry);
+}
+
+async function updateProfile() {
+    var data = new FormData(select('#formProfile'));
+    var sUserId = await getSession();
+    data.append('userId', sUserId);
+
+    const file = document.querySelector('[type=file]').files;
+
+    if(file.length) {
+        data.append('file', file);
+    }
+
+    let connection = await fetch(
+        'api/api-file-upload.php',
+        {
+            "method": "POST",
+            "body": data
+        }
+    )
+
+    let sResponse = await connection.text();
+
+    console.log(data.get('previousUserCountry'));
+    // TODO: check modifications
+
+    // If sResponse is 0, previousUserGender.value == userGender,
+    // previousUserCountry.value == userCountry then no modif
+
+    // clear hidden input from form data
+
+    data.set('userFile', sResponse);
+
+    connection = await fetch(
+        'api/api-update-user.php',
+        {
+            "method": "POST",
+            "body": data
+        }
+    )
+
+    sResponse = await connection.text();
+    console.log(sResponse);
+
+    // console.log(data.get('userImage'));
+
+    // TODO: clear file upload when closing modal
+}
+
 // ALRIGHT
 
 async function updateTweet() {
@@ -712,6 +797,9 @@ function closeModal() {
 
 function openModal() {
     select(event.target.getAttribute("data-queryElement")).style.display = "block";
+    if(event.target.getAttribute("data-queryElement") == "#modal-profile") {
+        getProfile();
+    }
 }
 
 function closePopup() {

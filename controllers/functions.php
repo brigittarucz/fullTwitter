@@ -47,7 +47,7 @@ function postUser($email, $password) {
                 var_dump($aUser->{'user_email'});
                 //    $aUserToSend;
                $aUserToSend["id"] = $aUser->{'user_id'};
-               $aUserToSend["name"] = $aUser->{'user_name'};
+               $aUserToSend["name"] = $aUser->{'user_username'};
 
                return json_encode($aUserToSend);
             } else {

@@ -148,7 +148,7 @@ async function buildViewWrite(userEvent) {
                     var messageFromTemplate = `
               <article class="middle_text-from">
                 <div>
-                  <img src="` + (receiverData.receiverImage === "" ? "profile.png" : receiverData.receiverImage) + `">
+                  <img src="` + (receiverData.receiverImage === "" ? "media/profile-placeholder.png" : receiverData.receiverImage) + `">
                   <p class="text-from_message">${message.messageBody}</p>
                 </div>
                 <small class="text-from_date">${message.messageTimestamp}</small>
