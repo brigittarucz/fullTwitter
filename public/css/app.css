@@ -734,11 +734,9 @@ button {
 
 .btn:disabled {
   opacity: 0.6;
-}
-
-.btn:disabled:hover {
   background-color: var(--blue-color);
   cursor: unset;
+  color: white;
 }
 
 .btn-link {
@@ -759,13 +757,17 @@ button {
   border: 1px solid var(--blue-color);
 }
 
-.btn:hover {
+/* .btn-reverse:disabled {
+
+} */
+
+.btn:hover:not([disabled]) {
   background-color: var(--btn-hover-color);
   transition: 200ms ease-in-out;
   cursor: pointer;
 }
-
-.btn-reverse:hover {
+ 
+.btn-reverse:hover:not([disabled]) {
   background-color: var(--blue-hover-color);
   transition: 200ms ease-in-out;
   cursor: pointer;
@@ -1621,4 +1623,18 @@ div#popup-post a {
 #middle_recommended-section .btn-reverse {
   max-width: 8rem;
   margin-top: 0.75rem;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fadeOut {
+  animation: fadeOut 1s 1 forwards;
 }

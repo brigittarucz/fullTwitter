@@ -21,6 +21,8 @@ try {
     $cursor = $statement->execute();
     $oDataRandomUsers = $cursor->getAll();
 
+    // Compare with users' already existent relationships and select 3
+
     echo json_encode($oDataRandomUsers);
 } catch (Exception $ex) {
     sendError(500, "Cannot get random users", $ex);
