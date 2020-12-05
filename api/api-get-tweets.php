@@ -10,7 +10,7 @@ try {
 
     // TODO: get tweets of tweet_user_fk
 
-    $queryTweetsLinksTrue = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_full_name, tweets.*, tweetslinks.* 
+    $queryTweetsLinksTrue = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_profile_image, users.user_path_profile_image, users.user_full_name, tweets.*, tweetslinks.* 
                                                FROM users JOIN tweets ON tweets.tweet_user_fk=users.user_id 
                                                JOIN tweetslinks ON tweets.tweet_id=tweetslinks.tweet_fk 
                                                ORDER BY tweets.tweet_created DESC 
@@ -24,7 +24,7 @@ try {
     //                                             ORDER BY tweets.tweet_created 
     //                                             DESC LIMIT 5);
    
-    $queryTweetsLinksFalse = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_full_name, tweets.* 
+    $queryTweetsLinksFalse = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_profile_image, users.user_path_profile_image, users.user_full_name, tweets.* 
                                                 FROM users JOIN tweets ON tweets.tweet_user_fk=users.user_id 
                                                 WHERE tweets.tweet_has_link = 0 
                                                 ORDER BY tweets.tweet_created 

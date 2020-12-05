@@ -29,31 +29,52 @@ try {
 
     $query->execute();
 
-    if($_POST['userFile'] != "0") {
-        $insertId = $dbMaria->lastInsertId();
+    if($_POST['userFile'] != "0" && !(strpos($_POST['userFile'], 'error'))) {
 
         try {
+            $query = $dbMaria->prepare('UPDATE users SET user_profile_image = :user_profile_image, user_path_profile_image = :user_path_profile_image
+            WHERE user_id = :user_id');
 
-            $statementUpdateImage = new ArangoStatement(
-                $dbArango,
-                [
-                    'query' => 'UPDATE @userId WITH { "profileImage": @profileImage } IN twitterUsersV2 RETURN NEW',
-                    'bindVars' => [
-                        'userId' => $_POST['userId'],
-                        'profileImage' => $_POST['userFile']
+            $query->bindValue(":user_id", $_POST['userId']);
+            $query->bindValue(":user_profile_image", substr($_POST['userFile'], 15, strlen($_POST['userFile'])));
+            $query->bindValue(":user_path_profile_image", "/media/uploads/");
+
+            $query->execute();
+
+            $insertId = $dbMaria->lastInsertId();
+
+            try {
+
+                $statementUpdateImage = new ArangoStatement(
+                    $dbArango,
+                    [
+                        'query' => 'UPDATE @userId WITH { "profileImage": @profileImage } IN twitterUsersV2 RETURN NEW',
+                        'bindVars' => [
+                            'userId' => $_POST['userId'],
+                            'profileImage' => $_POST['userFile']
+                        ]
                     ]
-                ]
-            );
-
-            $cursorUpdateImage = $statementUpdateImage->execute();
-            $dataUpdate = $cursorUpdateImage->getAll();
-            $dataUpdate = $dataUpdate[0];
-
-            echo 'Sucess in updating both user image and data';
+                );
+    
+                $cursorUpdateImage = $statementUpdateImage->execute();
+                $aDataUpdate = $cursorUpdateImage->getAll();
+                $aDataUpdate = $aDataUpdate[0];
+    
+                session_start();
+    
+                $_SESSION['image'] = $aDataUpdate->profileImage;
+                
+                echo 'Sucess in updating both user image and data';
+    
+            } catch (Exception $ex) {
+                sendError(500, "Server error in update user image", __LINE__);
+            }
 
         } catch (Exception $ex) {
-            sendError(500, "Server error in update user image", __LINE__);
+            sendError(500, "Server error in update user image data".$ex, __LINE__);
         }
+
+       
     } else {
         echo 'Success in updating user data';
     }

@@ -1,8 +1,6 @@
-// ALRIGHT
-
 async function getSession() {
     let connectionGetSession = await fetch(
-        'get-session.php', {
+        '../../api/get-session.php', {
             "method": "GET"
         }
     )
@@ -10,8 +8,6 @@ async function getSession() {
     let sUserId = await connectionGetSession.text();
     return sUserId;
 }
-
-// ALRIGHT
 
 function checkHttp(data, api) {
 
@@ -54,7 +50,7 @@ function checkHttp(data, api) {
                     )
                 
                     let sResponse = await connection.text();
-                    // console.log(sResponse);
+                    console.log(sResponse);
                     
                     // TODO: append tweet 
 
@@ -83,8 +79,6 @@ function checkHttp(data, api) {
     }
 }
 
-// ALRIGHT
-
 async function createTweet() {
 
     if (event.target.querySelector("textarea").value.length >= 10 && event.target.querySelector("textarea").value.length <= 140) {
@@ -98,14 +92,12 @@ async function createTweet() {
 
     document.querySelector("#modal-tweet #formTweet").reset();
 
-    await checkHttp(data, 'api/api-create-tweet.php');
+    await checkHttp(data, '../../api/api-create-tweet.php');
 
     } else {
        event.target.checkValidity();
     } 
 }
-
-// ALRIGHT
 
 async function generateImageUrl(randomizer, tweetHasLink) {
     if(!parseInt(tweetHasLink) && randomizer) {
@@ -123,8 +115,6 @@ async function generateImageUrl(randomizer, tweetHasLink) {
     }
 }
 
-// ALRIGHT
-
 function formatDate(tweet_date) {
     var utcSeconds = tweet_date;
     var date = new Date(0); // Setting date to epoch
@@ -139,8 +129,6 @@ function formatDate(tweet_date) {
     return formattedDate;
 }
 
-// ALRIGHT
-
 function formatHours(tweet_date) {
     var utcSeconds = tweet_date;
     var date = new Date(0); // Setting date to epoch
@@ -154,8 +142,6 @@ function formatHours(tweet_date) {
     return formattedDate;
 }
 
-// ALRIGHT
-
 async function getTweets() {
 
     if(document.querySelector("#middle_posts-section") && document.querySelector("#middle_action-tweets")) {
@@ -167,7 +153,7 @@ async function getTweets() {
     // TODO: get user's tweets
 
     let connectionGetTweets = await fetch(
-        'api/api-get-tweets.php?id=' + sUserId, {
+        '../../api/api-get-tweets.php?id=' + sUserId, {
             "method": "GET"
         }
     )
@@ -189,7 +175,7 @@ async function getTweets() {
         let tweetBlueprint = `
         <article class="post-article" data-tweetId="${jTweet['tweet_id']}">
         <div>
-        <img src="media/icon.jpg" alt="">
+        <img src="`+ (jTweet['user_profile_image'] != 'generic.png' ? ""+jTweet['user_path_profile_image']+jTweet['user_profile_image'] : "media/profile-placeholder.png") +`" alt="">
         </div>
         <div>
         <h5>${jTweet['user_full_name']} <span class="post-following">
@@ -315,7 +301,7 @@ async function getTweets() {
                     </div>
                     <article class="post-article">
                     <div>
-                        <img src="media/icon.jpg" alt="">
+                        <img src="`+ (jTweet['user_profile_image'] != 'generic.png' ? ""+jTweet['user_path_profile_image']+jTweet['user_profile_image'] : "media/profile-placeholder.png") +`" alt="">
                     </div>
                     <div>
                         <h5>${jTweet['user_full_name']}<span class="post-at">@${jTweet['user_username']}</span> <span class="post-time">&#8226; ${formattedDate}</span> <a href="/"
@@ -414,8 +400,6 @@ async function getTweets() {
 
 }
 
-// ALRIGHT
-
 async function getTweet() {
 
 
@@ -426,7 +410,7 @@ async function getTweet() {
     let sUserId = await getSession();
 
     let connection = await fetch(
-        'api/api-get-tweet.php?userId='+sUserId+'&tweetId='+tweetId, 
+        '../../api/api-get-tweet.php?userId='+sUserId+'&tweetId='+tweetId, 
         {
             "method": "GET"
         }
@@ -459,7 +443,7 @@ async function getTweet() {
         </section>
         <section id="tweet-details_body">
             <div>
-            <img src="media/icon.jpg" alt="">
+            <img src="`+ (tweet.user_profile_image != 'generic.png' ? ""+tweet.user_path_profile_image + tweet.user_profile_image : "media/profile-placeholder.png") +`" alt="">
             </div>
             <div>
             <h4 class="tweet-details_poster">${tweet.user_full_name}</h4>
@@ -571,8 +555,6 @@ async function getTweet() {
 
 }
 
-// ALRIGHT
-
 async function deleteTweet() {
     let modalPopup = event.target.parentElement.parentElement;
     event.target.parentElement.parentElement.parentElement.style.display = "none";
@@ -581,7 +563,7 @@ async function deleteTweet() {
     let sUserId = await getSession();
 
     let connection = await fetch(
-        'api/api-delete-tweet.php?tweetId=' + tweetId + '&userId=' + sUserId,
+        '../../api/api-delete-tweet.php?tweetId=' + tweetId + '&userId=' + sUserId,
         {
             "method": "GET"
         }
@@ -595,12 +577,11 @@ async function deleteTweet() {
     
 }
 
-
 async function getProfile() {
     let sUserId = await getSession();
 
     let connection = await fetch(
-        'api/api-get-lookups.php?id=' + sUserId,
+        '../../api/api-get-lookups.php?id=' + sUserId,
         {
             "method": "GET"
         }
@@ -645,7 +626,7 @@ async function updateProfile() {
     }
 
     let connection = await fetch(
-        'api/api-file-upload.php',
+        '../../api/api-file-upload.php',
         {
             "method": "POST",
             "body": data
@@ -653,34 +634,29 @@ async function updateProfile() {
     )
 
     let sResponse = await connection.text();
-
-    console.log(data.get('previousUserCountry'));
-    // TODO: check modifications
-
-    // If sResponse is 0, previousUserGender.value == userGender,
-    // previousUserCountry.value == userCountry then no modif
-
-    // clear hidden input from form data
-
-    data.set('userFile', sResponse);
-
-    connection = await fetch(
-        'api/api-update-user.php',
-        {
-            "method": "POST",
-            "body": data
-        }
-    )
-
-    sResponse = await connection.text();
+    
     console.log(sResponse);
+    if(sResponse != "0" || 
+       data.get('previousUserCountry') != data.get('userCountry') ||
+       data.get('previousUserGender') != data.get('userGender')) {
+            data.set('userFile', sResponse);
 
-    // console.log(data.get('userImage'));
+            connection = await fetch(
+                '../../api/api-update-user.php',
+                {
+                    "method": "POST",
+                    "body": data
+                }
+            )
+        
+            sResponse = await connection.text();
+            console.log(sResponse);
+            window.location.reload();
+       } else {
+           console.log("No modifications");
+       }
 
-    // TODO: clear file upload when closing modal
 }
-
-// ALRIGHT
 
 async function updateTweet() {
    
@@ -698,7 +674,7 @@ async function updateTweet() {
 
         if(data.get('previousTweetBody') != data.get('tweetBody')) {
 
-            checkHttp(data, 'api/api-update-tweet.php');
+            checkHttp(data, '../../api/api-update-tweet.php');
 
         };
 
@@ -708,8 +684,6 @@ async function updateTweet() {
         event.target.checkValidity();
     }
 }
-
-// ALRIGHT
 
 async function hideTweet() {
 
@@ -729,7 +703,7 @@ async function hideTweet() {
     data.set('hidden', eventElement.textContent == 'Unhide' ? 0 : 1);
     data.set('urlName', 'no-reset');
 
-    let connexion = await fetch('api/api-update-tweet.php', 
+    let connexion = await fetch('../../api/api-update-tweet.php', 
         {
             "method": "POST",
             "body": data
@@ -791,7 +765,10 @@ function closeModal() {
             select(event.target.parentElement.getAttribute("data-queryElement")).style.display = "none";
         }
     }
-
+   
+    // if(event.target.getAttribute("data-queryelement") == "#modal-profile") {
+    //     select('[type=file]').value = "";
+    // }
 
 }
 

@@ -7,7 +7,7 @@ async function sendRecoveryEmail() {
     }
 
     let connectionResetPass = await fetch(
-        'password-reset-email.php',
+        '../../api/password-reset-email.php',
         {
             "method": "POST",
             "body": data
@@ -32,7 +32,7 @@ async function modifyPassword() {
     }
 
     let connectionModifyPass = await fetch(
-        '../password-update-database.php',
+        '../../api/password-update-database.php',
         {
             "method": "POST",
             "body": data

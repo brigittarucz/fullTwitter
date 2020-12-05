@@ -1,8 +1,6 @@
 <?php
 
-
 use ArangoDBClient\Statement as ArangoStatement;
-
 
 function callDb() {
     // If we have an associative array + second arg true = $aUser['email']
@@ -31,10 +29,34 @@ function getUser($id) {
         }
     }
 
-    echo '{"error": "User does not exist"}';
+    echo '{"error": "User does not exist'.$id.'"}';
 }
 
-function postUser($email, $password) {
+function getUserArango($id, $dbArango) {
+    try {
+
+        $statementGetUser = new ArangoStatement(
+            $dbArango, 
+            [
+                'query' => 'RETURN DOCUMENT(@userId)',
+                'bindVars' => [
+                    'userId' => "twitterUsersV2/".$id
+                ]
+            ]
+        );
+    
+        $cursorStatementGetUser = $statementGetUser->execute();
+        $aDataUserArangoDB = $cursorStatementGetUser->getAll();
+
+        return $aDataUserArangoDB[0];
+
+    } catch (Exception $ex) {
+        sendError(500, 'Server error', $ex);
+    }
+}
+
+// postUser()
+function getUserMaria($email, $password) {
 
     $aUsers = callDb();
 
@@ -118,7 +140,7 @@ function updatePassword($oldPassword, $newPassword, $userId) {
 
 }
 
-function createUser($email, $password, $name, $birthdate) {
+function createUser($email, $password, $name, $birthdate, $dbArango) {
 
         $aUsers = callDb();
 
@@ -132,6 +154,8 @@ function createUser($email, $password, $name, $birthdate) {
         require(__DIR__.'/../database/mariadb.php'); 
 
         try {
+
+        $dbMaria->beginTransaction();
         $query = $dbMaria->prepare('INSERT INTO users VALUES 
         (NULL, :user_email, :user_password, :user_username, :user_full_name, NOW(), :user_birthdate, 1, 1, "generic.png", "media/", 0, :user_verification_code, 0, :user_ip_created)');
 
@@ -148,9 +172,12 @@ function createUser($email, $password, $name, $birthdate) {
 
         $query->execute();
 
-        try {
+        if($query->rowCount() == 0) {
+            $dbMaria->rollback();
+            sendError(400, 'Transaction went wrong', __LINE__);
+        }
 
-            require(__DIR__.'/../database/arangodb.php');
+        try {
 
             $user = setUser($dbMaria->lastInsertId(), $name, $username);
 
@@ -165,16 +192,22 @@ function createUser($email, $password, $name, $birthdate) {
             );
 
             $cursor = $statement->execute();
+            $dataNewUser = $cursor->getAll();
+
+            if($dataNewUser[0]->getKey()) {
+                $dbMaria->commit();
+                return json_encode(getUser($dataNewUser[0]->getKey()));
+            }
 
         } catch (Exception $err) {
             sendError(500, "Cannot insert in ArangoDB", __LINE__);
+            $dbMaria->rollback();
         }
 
     } catch (Exception $ex) {
         sendError(500, 'Server error', __LINE__);
     }
-
-    return json_encode(getUser($dbMaria->lastInsertId()));
+   
 }
 
 function setUser($id, $fullName, $username) {
@@ -197,7 +230,7 @@ function getTweet($userId, $tweetId) {
     require(__DIR__.'/../database/mariadb.php');
 
     try {
-        $q = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_full_name, tweets.*, tweetslinks.* 
+        $q = $dbMaria->prepare('SELECT users.user_id, users.user_username, users.user_full_name, users.user_profile_image, users.user_path_profile_image, tweets.*, tweetslinks.* 
                                 FROM users JOIN tweets ON tweets.tweet_user_fk=users.user_id 
                                 LEFT OUTER JOIN tweetslinks ON tweets.tweet_id=tweetslinks.tweet_fk 
                                 WHERE tweets.tweet_id=:tweet_id LIMIT 1');

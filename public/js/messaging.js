@@ -3,13 +3,13 @@ async function sendMessage() {
     var form = new FormData(event.target);
     form.append("messageBody", event.target.querySelector("textarea").value);
 
-    var conn = await fetch('api/api-messaging.php', {
+    var conn = await fetch('../../api/api-messaging.php', {
         method: "POST",
         body: form
     });
 
     var sResponse = await conn.json();
-    console.log(sResponse);
+    // console.log(sResponse);
     if (conn.status == 201) {
         var htmlContainer = document.querySelector(".middle_texts-container");
 
@@ -48,7 +48,7 @@ function returnWriteMessage() {
 var fetchViewDataInterval;
 
 function getViewWrite() {
-    console.log(event.target);
+    // console.log(event.target);
     var userEvent = event.target;
     fetchViewDataInterval = setInterval(() => {
         buildViewWrite(userEvent);
@@ -71,7 +71,7 @@ async function buildViewWrite(userEvent) {
     // GET user
     form.append("receiverId", userEvent.getAttribute("data-messageto"));
 
-    var conn = await fetch('api/api-get-conversation.php', {
+    var conn = await fetch('../../api/api-get-conversation.php', {
         method: "POST",
         body: form
     })
@@ -81,7 +81,7 @@ async function buildViewWrite(userEvent) {
     // console.log(sResponse);
     // console.log(JSON.parse(sResponse));
 
-    console.log(sResponse);
+    // console.log(sResponse);
     var receiverData = JSON.parse(sResponse);
     if (!document.querySelector(".middle_write-header")) {
 
@@ -182,14 +182,17 @@ async function searchUser() {
 
     if (form.get("userSearch") != "") {
 
-        var conn = await fetch('api/api-search-users.php', {
+        let sUserId = await getSession();
+        form.set('userId', sUserId);
+
+        var conn = await fetch('../../api/api-search-users.php', {
             method: "POST",
             body: form
         })
 
         var sResponse = await conn.text();
 
-        // console.log(sResponse);
+        console.log(sResponse);
         var aSearchResults = JSON.parse(sResponse);
         var htmlContainer = document.querySelector(".middle_messages-container");
 
@@ -225,12 +228,12 @@ async function searchUser() {
 
 async function getConversations() {
 
-    var conn = await fetch('api/api-get-conversations.php', {
+    var conn = await fetch('../../api/api-get-conversations.php', {
         method: "GET"
     })
 
     var sResponse = await conn.text();
-    console.log(sResponse);
+    console.log(JSON.parse(sResponse));
     if (conn.status == 200) {
         var htmlContainer = document.querySelector(".middle_messages-container");
         htmlContainer.innerHTML = "";

@@ -41,10 +41,12 @@ try {
             $aTweet->tweetLink_url_title = $_POST['urlTitle'];
             $aTweet->tweetLink_url_description = $_POST['urlDescription'];
             var_dump($aTweet);
-        } else if(!isset($_POST['urlName']) && ($aTweet->tweet_has_link == '1')) {
-            $aTweet->tweet_has_link = 0;
-            var_dump($aTweet);
-        }
+            echo "hello";
+        } 
+    } else if(!isset($_POST['urlName']) && ($aTweet->tweet_has_link == '1')) {
+        $aTweet->tweet_has_link = 0;
+        var_dump($aTweet);
+        echo "hello";
     }
     // TODO: check if tweet body is the same
 

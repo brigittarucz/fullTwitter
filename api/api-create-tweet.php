@@ -56,8 +56,6 @@ try {
             $queryLink->bindValue(":tweetLink_url_description", $_POST['urlDescription']);
 
             $queryLink->execute();
-    
-            // both rows return good values but they do not update
 
             if ( $queryLink->rowCount() == 0 ) {
                 $dbMaria->rollback();
@@ -76,9 +74,6 @@ try {
     } catch (Exception $err) {
         sendError(500, "Server error update tweet".$err, __LINE__);
     }
-
-
-    // $action = manipulateTweet($_POST['userId'], $jTweet, 'Add');
 
 } catch (Exception $err) {
     sendError(500, "Server error", __LINE__);

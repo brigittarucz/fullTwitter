@@ -12,7 +12,10 @@ try {
     $statementSearchUsers = new ArangoStatement(
         $dbArango,
         [
-            'query' => 'FOR user IN twitterUsersV2 RETURN {"key": user._key, "fullName": user.fullName, "username": user.username, "profileImage": user.profileImage}'
+            'query' => 'FOR user IN twitterUsersV2 FILTER user._key != @userKey LIMIT 15 RETURN {"key": user._key, "fullName": user.fullName, "username": user.username, "profileImage": user.profileImage}',
+            'bindVars' => [
+                'userKey' => $_POST['userId']
+            ]
         ]
     );
 

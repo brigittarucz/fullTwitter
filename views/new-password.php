@@ -19,7 +19,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Set new password</title>
-    <link rel="stylesheet" type="text/css" href="../app.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/app.css">
 </head>
 
 <body>
@@ -51,7 +51,7 @@
         </form>
     </main>
 
-    <script src="../password.js"></script>
+    <script src="../public/js/password.js"></script>
 </body>
 
 </html>

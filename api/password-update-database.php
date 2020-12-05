@@ -2,7 +2,7 @@
 
 try {
 
-    require_once('controllers/functions.php');
+    require_once('../controllers/functions.php');
 
     if(!isset($_POST['passwordNew'])) {
         sendError(400, "New password is not set", __LINE__);

@@ -241,6 +241,7 @@ function updateLastMessage($db, $senderId, $receiverId) {
                 $date = new DateTime();
                 $date = $date->format('Y-m-d H:i:s');
                 $userChats[$index]["lastMessageDate"] = $date;
+                $userChats[$index]["receiverImage"] = $_POST['receiverImage'];
 
                 try {
                     $statementUpdateUserChat = new ArangoStatement(

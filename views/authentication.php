@@ -30,15 +30,20 @@
             }
 
             require_once('../controllers/functions.php');
-            $validUser = postUser($_POST['email'],$_POST['password']);
+            require_once(__DIR__.'/../database/arangodb.php');
 
-            if(!$validUser) {
+            $userMaria = getUserMaria($_POST['email'],$_POST['password']);
+
+            if(!$userMaria) {
                 echo 'Improper login credentials';
             } else {
-                $validUser = json_decode($validUser);
+                $userMaria = json_decode($userMaria);
+                $userArango = getUserArango($userMaria->id, $dbArango);
+
                 session_start();
-                $_SESSION['id'] = $validUser->id;
-                $_SESSION['name'] = $validUser->name;
+                $_SESSION['id'] = $userMaria->id;
+                $_SESSION['name'] = $userMaria->name;
+                $_SESSION['image'] = $userArango->profileImage;
 
                 header("Location: home");
             }
@@ -94,20 +99,22 @@
             }
 
             require_once('../controllers/functions.php');
-
-            $user = createUser($_POST['signupEmail'], $_POST['signupPassword'], $_POST['signupName'], date_format($userBirthdate,"Y-m-d"));
+            require_once(__DIR__.'/../database/arangodb.php');
+            $user = createUser($_POST['signupEmail'], $_POST['signupPassword'], $_POST['signupName'], date_format($userBirthdate,"Y-m-d"), $dbArango);
 
             if(!$user) {
                 echo 'Email already exists';
                 return;
             } else {
 
-            $validUser = json_decode($user);
+            $userMaria = json_decode($user);
+            $userArango = getUserArango($userMaria->user_id, $dbArango);
+
             session_start();
-            $_SESSION['id'] = $validUser->user_id;
-            $_SESSION['name'] = $validUser->user_username;
-            
-            print_r($validUser);
+            $_SESSION['id'] = $userMaria->user_id;
+            $_SESSION['name'] = $userMaria->user_username;
+            $_SESSION['image'] = $userArango->profileImage;
+
 
             header("Location: home");
             }
@@ -126,7 +133,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login on Twitter / Twitter</title>
-    <link rel="stylesheet" type="text/css" href="../app.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/app.css">
 </head>
 
 <body>
@@ -263,7 +270,7 @@
         </div>
     </div>
 
-    <script src="../app.js"></script>
+    <script src="../public/js/app.js"></script>
 </body>
 
 </html>

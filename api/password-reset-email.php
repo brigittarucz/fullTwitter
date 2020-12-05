@@ -5,7 +5,7 @@
 
 try {
 
-    require_once('controllers/functions.php');
+    require_once('../controllers/functions.php');
 
     if(!isset($_POST['email'])) {
         sendError(400, "Email is not set", __LINE__);
@@ -33,9 +33,9 @@ try {
 
     if(isset($sendNow)) {
     
-        require 'PHPMailer/src/Exception.php';
-        require 'PHPMailer/src/PHPMailer.php';
-        require 'PHPMailer/src/SMTP.php';
+        require '../PHPMailer/src/Exception.php';
+        require '../PHPMailer/src/PHPMailer.php';
+        require '../PHPMailer/src/SMTP.php';
 
         $mail = new PHPMailer(true);
 
