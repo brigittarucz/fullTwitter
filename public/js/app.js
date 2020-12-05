@@ -729,6 +729,12 @@ function changeView() {
             getConversations();
         }
         
+        if(sRoute == 'recommended') {
+            // getRecommended();
+            select("#middle-" + sRoute).style.display = "block";
+            return;
+        }
+
         var previouslyClicked = select("a.active");
         if (previouslyClicked !== event.target) {
 

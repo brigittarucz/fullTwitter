@@ -495,11 +495,6 @@ div#right::-webkit-scrollbar {
 
 /* ############################## */
 
-#middle-profile svg {
-  /* fill: var(--blue-color); */
-  height: 1.2rem;
-}
-
 #middle_header-section {
   border-bottom: 1px solid var(--lightgrey-color1);
   padding: 1rem 0.5rem;
@@ -513,9 +508,10 @@ div#right::-webkit-scrollbar {
   align-self: center;
 }
 
-#middle_header-section svg {
+#middle_header-section > svg {
   margin-right: 2rem;
   fill: var(--blue-color);
+  width: 1.5rem;
 }
 
 #middle-profile {
@@ -1594,3 +1590,35 @@ div#popup-post a {
   align-items: center;    
 }
 
+/* ###############   RECOMMENDED   ############### */
+
+#middle_recommended-section .article-recommended {
+  display: grid;
+  grid-template-rows: 1fr; 
+  grid-template-columns: 4.5rem 3fr 1.5fr 1fr;
+  justify-content: center;
+  align-content: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--lightgrey-color1);
+}
+
+#middle_recommended-section .article-recommended img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+#middle_recommended-section .article-recommended div:nth-of-type(1) {
+  padding: 0.5rem 0;
+}
+
+#middle_recommended-section .article-recommended div:nth-of-type(2) {
+  padding: 1rem 0;
+}
+
+
+#middle_recommended-section .btn-reverse {
+  max-width: 8rem;
+  margin-top: 0.75rem;
+}

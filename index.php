@@ -343,6 +343,74 @@
         </section>
       </div>
 
+      <div class="view" id="middle-recommended">
+        <section id="middle_header-section">
+          <svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue">
+            <g>
+              <path d="M20 11H7.414l4.293-4.293c.39-.39.39-1.023 0-1.414s-1.023-.39-1.414 0l-6 6c-.39.39-.39 1.023 0 1.414l6 6c.195.195.45.293.707.293s.512-.098.707-.293c.39-.39.39-1.023 0-1.414L7.414 13H20c.553 0 1-.447 1-1s-.447-1-1-1z">
+              </path>
+            </g>
+          </svg>
+          <div>
+            <h3 class="text-lg-dark-900">Connect</h3>
+          </div>
+        </section>
+        <section id="middle_header-section">
+          <div>
+            <h3 class="text-lg-dark-900">Suggested for you</h3>
+          </div>
+        </section>
+        <section id="middle_recommended-section">
+          <div class="middle_recommended-section_container">
+            <article class="article-recommended">
+              <img src="media/icon.jpg" alt="">
+              <div>
+                <h4>Elon Musk</h4>
+                <p>@elonMusk</p>             
+              </div>
+              <div>
+                <p><span style="font-weight: 600;">3</span> connections</p>
+              </div>
+              <button class="btn btn-reverse">Follow</button>
+            </article>
+            <article class="article-recommended">
+              <img src="media/icon.jpg" alt="">
+              <div>
+                <h4>Elon Musk</h4>
+                <p>@elonMusk</p>             
+              </div>
+              <div>
+                <p><span style="font-weight: 600;">3</span> connections</p>
+              </div>
+              <button class="btn btn-reverse">Follow</button>
+            </article>
+            <article class="article-recommended">
+              <img src="media/icon.jpg" alt="">
+              <div>
+                <h4>Elon Musk</h4>
+                <p>@elonMusk</p>             
+              </div>
+              <div>
+                <p><span style="font-weight: 600;">3</span> connections</p>
+              </div>
+              <button class="btn btn-reverse">Follow</button>
+            </article>
+            <article class="article-recommended">
+              <img src="media/icon.jpg" alt="">
+              <div>
+                <h4>Elon Musk</h4>
+                <p>@elonMusk</p>             
+              </div>
+              <div>
+                <p><span style="font-weight: 600;">3</span> connections</p>
+              </div>
+              <button class="btn btn-reverse">Follow</button>
+            </article>
+          </div>
+        </section>
+      </div>
+
+
     </div> <!-- end middle column -->
 
 
@@ -398,55 +466,16 @@
           <h4>iPhone</h4>
           <p>227K Tweets</p>
         </article>
-        <article class="article-trend">
-          <a href="/">
-            <svg viewBox="0 0 24 24" class="r-4qtqp9 r-yyyyoo r-ip8ujx r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-27tl0q">
-              <g>
-                <path d="M20.207 8.147c-.39-.39-1.023-.39-1.414 0L12 14.94 5.207 8.147c-.39-.39-1.023-.39-1.414 0-.39.39-.39 1.023 0 1.414l7.5 7.5c.195.196.45.294.707.294s.512-.098.707-.293l7.5-7.5c.39-.39.39-1.022 0-1.413z">
-                </path>
-              </g>
-            </svg>
-          </a>
-          <p>Trending in Denmark</p>
-          <h4>iPhone</h4>
-          <p>227K Tweets</p>
-        </article>
-        <article class="article-trend">
-          <a href="/">
-            <svg viewBox="0 0 24 24" class="r-4qtqp9 r-yyyyoo r-ip8ujx r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-27tl0q">
-              <g>
-                <path d="M20.207 8.147c-.39-.39-1.023-.39-1.414 0L12 14.94 5.207 8.147c-.39-.39-1.023-.39-1.414 0-.39.39-.39 1.023 0 1.414l7.5 7.5c.195.196.45.294.707.294s.512-.098.707-.293l7.5-7.5c.39-.39.39-1.022 0-1.413z">
-                </path>
-              </g>
-            </svg>
-          </a>
-          <p>Trending in Denmark</p>
-          <h4>iPhone</h6>
-            <p>227K Tweets</p>
-        </article>
       </section>
       <section id="right_follow-section">
         <div>
           <h3 class="text-lg-dark-900">Who to follow</h3>
         </div>
-        <article class="article-follow">
-          <img src="media/icon.jpg" alt="">
-          <div>
-            <h4>Elon Musk</h4>
-            <p>@elonMusk</p>
-          </div>
-          <button class="btn btn-reverse">Follow</button>
-        </article>
-        <article class="article-follow">
-          <img src="media/icon.jpg" alt="">
-          <div>
-            <h4>Elon Musk</h4>
-            <p>@elonMusk</p>
-          </div>
-          <button class="btn btn-reverse">Follow</button>
-        </article>
+        <div class="right_follow-section_container">
+          
+        </div>
         <div>
-          <a href="/">Show More</a>
+          <a href="/recommended" onclick="changeView(); return false;">Show More</a>
         </div>
       </section>
     </div>
@@ -598,8 +627,9 @@
 
   </div>
 
-  <script type="text/javascript" src="public/js/messaging.js"></script>
   <script type="text/javascript" src="public/js/app.js"></script>
+  <script type="text/javascript" src="public/js/messaging.js"></script>
+  <script type="text/javascript" src="public/js/following.js"></script>
 </body>
 
 </html>
