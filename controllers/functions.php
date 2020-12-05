@@ -70,6 +70,7 @@ function getUserMaria($email, $password) {
                 //    $aUserToSend;
                $aUserToSend["id"] = $aUser->{'user_id'};
                $aUserToSend["name"] = $aUser->{'user_username'};
+               $aUserToSend["user_full_name"] = $aUser->{'user_full_name'};
 
                return json_encode($aUserToSend);
             } else {

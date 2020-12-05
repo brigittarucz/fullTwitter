@@ -12,7 +12,7 @@ try {
     $statementSearchUsers = new ArangoStatement(
         $dbArango,
         [
-            'query' => 'FOR user IN twitterUsersV2 FILTER user._key != @userKey LIMIT 15 RETURN {"key": user._key, "fullName": user.fullName, "username": user.username, "profileImage": user.profileImage}',
+            'query' => 'FOR user IN twitterUsersV2 FILTER user._key != @userKey RETURN {"key": user._key, "fullName": user.fullName, "username": user.username, "profileImage": user.profileImage}',
             'bindVars' => [
                 'userKey' => $_POST['userId']
             ]
@@ -46,6 +46,11 @@ try {
 
     http_response_code(200);
     header('Content-type: application/json');
+
+    if(count($aUserSearchResults) != 10) {
+        $aUserSearchResults = array_slice($aUserSearchResults, 0, -(count($aUserSearchResults)-10));
+    } 
+
     echo json_encode($aUserSearchResults);
     exit();
 

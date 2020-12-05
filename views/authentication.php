@@ -43,6 +43,7 @@
                 session_start();
                 $_SESSION['id'] = $userMaria->id;
                 $_SESSION['name'] = $userMaria->name;
+                $_SESSION['fullname'] = $userMaria->user_full_name;
                 $_SESSION['image'] = $userArango->profileImage;
 
                 header("Location: home");
@@ -113,6 +114,7 @@
             session_start();
             $_SESSION['id'] = $userMaria->user_id;
             $_SESSION['name'] = $userMaria->user_username;
+            $_SESSION['fullname'] = $userMaria->user_full_name;
             $_SESSION['image'] = $userArango->profileImage;
 
 

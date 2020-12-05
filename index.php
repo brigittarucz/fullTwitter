@@ -140,8 +140,8 @@
         </div>
         <div>
           <a href="/" onclick="return false;">
-            <p data-queryElement="#popup-logout"><strong data-queryElement="#popup-logout">OneDoctype</strong></p>
-            <p data-queryElement="#popup-logout">@OneDoctype</p>
+            <p data-queryElement="#popup-logout"><strong data-queryElement="#popup-logout"><?= $_SESSION['name'] ?></strong></p>
+            <p data-queryElement="#popup-logout"><?= 'Hey '.$_SESSION['fullname'].' !' ?></p>
           </a>
         </div>
         <svg viewBox="0 0 24 24" data-queryElement="#popup-logout">
