@@ -25,15 +25,6 @@ async function getMainViewRecommendations() {
     
 }
 
-
-    // TODO: 1. Get and insert potential followers, while excluding relationships already there
-    // FOR relationship IN twitterFollowersEdgesV2 FILTER relationship._from != "twitterUsersV2/4" LIMIT 2 RETURN relationship
-    // TODO: 2. Add onclick follow to post relationship and update following for the user and followers for the followed count
-    // TODO: 3. If succesful change element button text to following
-    // TODO: 5. Show more triggers two new additions which are graph based and imply graph traversal
-    // TODO: 6. Loading spinner?
-
-
 async function follow() {
     // True until finished db call
     var button = event.target;
@@ -51,21 +42,55 @@ async function follow() {
     })
 
     var connResponse = await conn.text();
+    // console.log(connResponse);
     if(conn.status == 200) {
         console.log(connResponse);
         button.disabled = false;
         button.classList.remove("btn-reverse");
         button.textContent = "Following";
+        button.onclick = "";
     } else if(conn.status == 201) {
         console.log(connResponse);
         button.disabled = false;
         button.classList.remove("btn-reverse");
         button.textContent = "Following";
+        button.onclick = "";
     }
 
-    setTimeout(() => {
-       
-    }, 2000);
 }
 
 getMainViewRecommendations();
+
+async function getRecommended() {
+    var sUserId = await getSession();
+    var mainViewRecommendationsContainer = select('.middle_recommended-section_container');
+    mainViewRecommendationsContainer.innerHTML = "";
+
+    var conn = await fetch('../../api/api-get-recommendations.php?userId='+sUserId, {
+        method: "GET"
+    })
+
+    var jRecommendedUsers = await conn.json();
+
+    if(jRecommendedUsers.length < 3) {
+        mainViewRecommendationsContainer.textContent = "Your search query was not narrow enough. Follow more users to narrow your recommendations.";
+    }
+
+    jRecommendedUsers.forEach(recommended => {
+        var recommendedBlueprint = `
+        <article class="article-recommended">
+                  <img src="`+ (recommended.profileImage != "" ? recommended.profileImage : 'media/profile-placeholder.png') +`" alt="">
+                  <div>
+                    <h4>${recommended.fullName}</h4>
+                    <p>@${recommended.username}</p>             
+                  </div>
+                  <div>
+                    <!-- <p><span style="font-weight: 600;">3</span> connections</p> -->
+                  </div>
+                  <button class="btn btn-reverse">Follow</button>
+        </article>`;
+    
+        mainViewRecommendationsContainer.insertAdjacentHTML('afterbegin', recommendedBlueprint);
+    });
+   
+}

@@ -7,7 +7,7 @@
     require_once(__DIR__.'/../database/mariadb.php');
 
     // Comment in production
-    $_GET['id'] = 15;
+    // $_GET['id'] = 15;
 
     if(!isset($_GET['id'])) {
         sendError(400, "User id is not set", __LINE__);

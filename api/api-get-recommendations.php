@@ -1,5 +1,6 @@
 <?php
 
+
 require_once('../controllers/functions.php');
 if(!isset($_GET['userId'])) { sendError(400, 'user id not set', __LINE__); };
 require_once(__DIR__.'/../database/arangodb.php');
@@ -10,19 +11,21 @@ try {
     $statement = new ArangoStatement(
         $dbArango,
         [
-            'query' => 'FOR user IN twitterUsersV2 FILTER user._key != @userKey SORT RAND() LIMIT 3 RETURN user',
+            'query' => 'FOR vertex IN 0..3 OUTBOUND @userId
+                        GRAPH "twitterFollowersGraph" 
+                        FILTER vertex._key != @userKey RETURN vertex',
             'bindVars' => [
+                'userId' => 'twitterUsersV2/'.$_GET['userId'],
                 'userKey' => $_GET['userId']
             ]
         ]
     );
 
     $cursor = $statement->execute();
-    $oDataRandomUsers = $cursor->getAll();
+    $oDataRecommendedUsers = $cursor->getAll();
 
-    // Compare with users' already existent relationships and select 3
-
-    echo json_encode($oDataRandomUsers);
+    echo json_encode($oDataRecommendedUsers);
 } catch (Exception $ex) {
-    sendError(500, "Cannot get random users", $ex);
+    sendError(500, "Cannot get recommended users", $ex);
 }
+

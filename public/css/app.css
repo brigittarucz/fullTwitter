@@ -293,6 +293,11 @@ section#middle_status-section div:first-of-type img {
   padding: 0 0.1rem;
 }
 
+.post-article div:nth-of-type(3) p {
+  max-height: 3.5rem;
+  overflow: hidden;
+}
+
 .post-article_link {
   margin: 1rem 0;
   border-radius: 1rem;
@@ -1593,6 +1598,14 @@ div#popup-post a {
 }
 
 /* ###############   RECOMMENDED   ############### */
+
+#middle-recommended {
+  display: none;
+}
+
+#middle-recommended section:nth-of-type(2) {
+  margin-bottom: 1rem;
+}
 
 #middle_recommended-section .article-recommended {
   display: grid;

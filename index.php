@@ -362,50 +362,7 @@
         </section>
         <section id="middle_recommended-section">
           <div class="middle_recommended-section_container">
-            <article class="article-recommended">
-              <img src="media/icon.jpg" alt="">
-              <div>
-                <h4>Elon Musk</h4>
-                <p>@elonMusk</p>             
-              </div>
-              <div>
-                <p><span style="font-weight: 600;">3</span> connections</p>
-              </div>
-              <button class="btn btn-reverse">Follow</button>
-            </article>
-            <article class="article-recommended">
-              <img src="media/icon.jpg" alt="">
-              <div>
-                <h4>Elon Musk</h4>
-                <p>@elonMusk</p>             
-              </div>
-              <div>
-                <p><span style="font-weight: 600;">3</span> connections</p>
-              </div>
-              <button class="btn btn-reverse">Follow</button>
-            </article>
-            <article class="article-recommended">
-              <img src="media/icon.jpg" alt="">
-              <div>
-                <h4>Elon Musk</h4>
-                <p>@elonMusk</p>             
-              </div>
-              <div>
-                <p><span style="font-weight: 600;">3</span> connections</p>
-              </div>
-              <button class="btn btn-reverse">Follow</button>
-            </article>
-            <article class="article-recommended">
-              <img src="media/icon.jpg" alt="">
-              <div>
-                <h4>Elon Musk</h4>
-                <p>@elonMusk</p>             
-              </div>
-              <div>
-                <p><span style="font-weight: 600;">3</span> connections</p>
-              </div>
-              <button class="btn btn-reverse">Follow</button>
-            </article>
+
           </div>
         </section>
       </div>
@@ -498,7 +455,7 @@
         </div>
         <div>
           <img src="<?= $_SESSION['image'] != "" ? $_SESSION['image'] : "\media\profile-placeholder.png"  ?>" alt="">
-          <textarea minlength="10" maxlength="140" name="tweetBody" placeholder="What's happening?" contenteditable></textarea>
+          <textarea minlength="10" maxlength="2000" name="tweetBody" placeholder="What's happening?" contenteditable></textarea>
         </div>
         <div class="tweet-controls">
           <a href="/">

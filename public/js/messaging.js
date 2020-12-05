@@ -76,7 +76,7 @@ async function buildViewWrite(userEvent) {
         body: form
     })
 
-    
+
     var sResponse = await conn.text();
     // console.log(sResponse);
     // console.log(JSON.parse(sResponse));
@@ -88,7 +88,7 @@ async function buildViewWrite(userEvent) {
         var htmlContainerWrite = document.querySelector("#middle_write-section");
 
         var receiverTemplate = `
-        <div class="middle_write-header"> 
+        <div class="middle_write-header">
           <a href="/return" onclick="returnWriteMessage(); return false;"><svg viewBox="0 0 24 24" class="r-13gxpu9 r-4qtqp9 r-yyyyoo r-1q142lx r-50lct3 r-dnmrzs r-bnwqim r-1plcrui r-lrvibr r-1srniue"><g><path d="M20 11H7.414l4.293-4.293c.39-.39.39-1.023 0-1.414s-1.023-.39-1.414 0l-6 6c-.39.39-.39 1.023 0 1.414l6 6c.195.195.45.293.707.293s.512-.098.707-.293c.39-.39.39-1.023 0-1.414L7.414 13H20c.553 0 1-.447 1-1s-.447-1-1-1z"></path></g></svg></a>
           <div class="article_write-image">
             <img src="` + (receiverData.receiverImage === "" ? "/media/profile-placeholder.png" : receiverData.receiverImage) + `" alt="">
@@ -136,9 +136,11 @@ async function buildViewWrite(userEvent) {
         htmlContainerChat.insertAdjacentHTML('afterbegin', chatTemplate);
     }
 
-    console.log(!localStorage.getItem("chatCount"));
+    // console.log(!localStorage.getItem("chatCount"));
 
     if (receiverData.chatHistory) {
+
+      
         if ((!localStorage.getItem("chatCount")) || (localStorage.getItem("chatCount") != receiverData.chatHistory.length)) {
             document.querySelector(".middle_texts-container").innerHTML = "";
             var chatHistoryData = receiverData.chatHistory;
@@ -202,7 +204,7 @@ async function searchUser() {
             aSearchResults.forEach(searchResult => {
                 var userMessage = `
           <a href="/message" onclick="getViewWrite(); return false;" data-messageto="${searchResult.key}">
-              <article class="article_message"> 
+              <article class="article_message">
                 <div class="article_message-image">
                   <img src="`+ (searchResult.profileImage == "" ? "media/profile-placeholder.png" : searchResult.profileImage)  +`" alt="">
                 </div>
@@ -232,8 +234,11 @@ async function getConversations() {
         method: "GET"
     })
 
+    localStorage.setItem("chatCount",0);
+    // console.log(localStorage.getItem("chatCount"));
+
     var sResponse = await conn.text();
-    console.log(JSON.parse(sResponse));
+    // console.log(JSON.parse(sResponse));
     if (conn.status == 200) {
         var htmlContainer = document.querySelector(".middle_messages-container");
         htmlContainer.innerHTML = "";
@@ -245,7 +250,7 @@ async function getConversations() {
         jUserMessages.forEach(jUserMessage => {
             var userMessage = `
       <a href="/message" onclick="getViewWrite(); return false;" data-messageto="${jUserMessage.receiverId}" data-chatid="${jUserMessage.chatId}">
-            <article class="article_message"> 
+            <article class="article_message">
               <div class="article_message-image">
                 <img src="` + (jUserMessage.receiverImage === "" ? "/media/profile-placeholder.png" : jUserMessage.receiverImage) + `" alt="">
               </div>
@@ -253,10 +258,10 @@ async function getConversations() {
                 <p class="article_message-username">${jUserMessage.receiverFullName}</p>
                 <p class="article_message-at">@${jUserMessage.receiverUsername}</p>
               </div>
-              <div> 
+              <div>
                 <p class="last_message-date">${jUserMessage.lastMessageDate}</p>
               </div>
-              <div> 
+              <div>
                 <p class="last_message">${jUserMessage.lastMessage}</p>
               </div>
             </article>

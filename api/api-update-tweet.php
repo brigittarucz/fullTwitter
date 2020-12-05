@@ -23,8 +23,8 @@ try {
             sendError(400, "Body is less than 10 chars", __LINE__);
         }
     
-        if(!(strlen($_POST['tweetBody']) <= 140)) {
-            sendError(400, "Body is more than 140 chars", __LINE__);
+        if(!(strlen($_POST['tweetBody']) <= 2000)) {
+            sendError(400, "Body is more than 2000 chars", __LINE__);
         }
         $aTweet->tweet_body = $_POST['tweetBody'];
     }

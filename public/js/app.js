@@ -15,6 +15,7 @@ function checkHttp(data, api) {
         let substrings = data.get('tweetBody').replace(/[\n\r]/g, " ");
         substrings = substrings.split(" ");
 
+        // console.log("here");
         substrings.forEach(substring => {
 
             if(substring.startsWith('http') || substring.startsWith('https')) {
@@ -32,7 +33,7 @@ function checkHttp(data, api) {
                         data.set('urlDescription', urlMetadata.data.description);
                         data.set('urlName', substring.includes('https') ? substring.slice(8, substring.length) : substring.slice(7, substring.length));
                     } else {
-                        console.log("error");
+                        console.log(urlMetadata.error);
                     }
 
                     // Check for formData
@@ -48,9 +49,11 @@ function checkHttp(data, api) {
                             "body": data
                         }
                     )
+
+                    // console.log("yes");
                 
                     let sResponse = await connection.text();
-                    console.log(sResponse);
+                    // console.log(sResponse);
                     
                     // TODO: append tweet 
 
@@ -81,7 +84,7 @@ function checkHttp(data, api) {
 
 async function createTweet() {
 
-    if (event.target.querySelector("textarea").value.length >= 10 && event.target.querySelector("textarea").value.length <= 140) {
+    if (event.target.querySelector("textarea").value.length >= 10 && event.target.querySelector("textarea").value.length <= 2000) {
 
     let sUserId = await getSession();
 
@@ -108,7 +111,7 @@ async function generateImageUrl(randomizer, tweetHasLink) {
         )
 
         let sImageLink = await connGetImage.url;
-        console.log("here");
+
         return sImageLink;
     } else {
         return 0;
@@ -200,9 +203,9 @@ async function getTweets() {
         </div>
         ` + (jTweet['tweet_has_link'] == "0" ? '<!--' : '')  +`
         <div class="post-article_link" style="display:` + (jTweet['tweet_partial_display'] == "0" ? 'block' : 'none') + `;">
-        <img src="` + (jTweet['tweetLink_url_image'] == "false" ? '/media/link-placeholder.jpg' : jTweet['tweetLink_url_image'])  + `" alt="Tweet Image">
+        <img src="` + (jTweet['tweetLink_url_image'] == "false" || jTweet['tweetLink_url_image'] == "null" ? '/media/link-placeholder.jpg' : jTweet['tweetLink_url_image'])  + `" alt="Tweet Image">
         <p class="title-link">${jTweet['tweetLink_url_title']}</p>
-        <p class="description-link">${jTweet['tweetLink_url_description']}</p>
+        <p class="description-link">` + (jTweet['tweetLink_url_description'] == "null" ? 'No description available' : jTweet['tweetLink_url_description'])  + `</p>
         <a href="/" class="source-link"><span class="source-icon"><svg viewBox="0 0 24 24"
                 class="r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-1plcrui r-lrvibr">
                 <g>
@@ -319,9 +322,9 @@ async function getTweets() {
                     </div>
                     `+ (jTweet['tweet_has_link'] == 1 ? '' : '<!--') +`
                     <div class="post-article_link" style="display:` + (jTweet['tweet_partial_display'] == "0" ? 'block' : 'none') + `;">
-                        <img src="` + (jTweet['tweetLink_url_image'] == "false" ? '/media/link-placeholder.jpg' : jTweet['tweetLink_url_image'])  + `" alt="">
+                        <img src="` + (jTweet['tweetLink_url_image'] == "false" || jTweet['tweetLink_url_image'] == "null" ? '/media/link-placeholder.jpg' : jTweet['tweetLink_url_image'])  + `" alt="">
                         <p class="title-link">${jTweet['tweetLink_url_title']}</p>
-                        <p class="description-link">${jTweet['tweetLink_url_description']}</p>
+                        <p class="description-link">` + (jTweet['tweetLink_url_description'] == "null" ? 'No description available' : jTweet['tweetLink_url_description'])  + `</p>
                         <a href="${jTweet['tweetLink_url']}" class="source-link"><span class="source-icon"><svg viewBox="0 0 24 24"
                             class="r-4qtqp9 r-yyyyoo r-1xvli5t r-dnmrzs r-bnwqim r-1plcrui r-lrvibr">
                             <g>
@@ -461,7 +464,7 @@ async function getTweet() {
             </div>
 
             <div class="tweet-details-text-content">
-            <textarea minlength="10" maxlength="140" class="text-xl-dark-100" name="tweetBody">${tweet.tweet_body}</textarea>
+            <textarea minlength="10" maxlength="2000" class="text-xl-dark-100" name="tweetBody">${tweet.tweet_body}</textarea>
             </div>
             <div class="tweet-details_media-image">
             <img src="media/image.jpg" alt="">
@@ -660,7 +663,7 @@ async function updateProfile() {
 
 async function updateTweet() {
    
-    if (event.target.querySelector("textarea").value.length >= 10 && event.target.querySelector("textarea").value.length <= 140) {
+    if (event.target.querySelector("textarea").value.length >= 10 && event.target.querySelector("textarea").value.length <= 2000) {
 
         sUserId = await getSession();
 
@@ -730,7 +733,7 @@ function changeView() {
         }
         
         if(sRoute == 'recommended') {
-            // getRecommended();
+            getRecommended();
             select("#middle-" + sRoute).style.display = "block";
             return;
         }
