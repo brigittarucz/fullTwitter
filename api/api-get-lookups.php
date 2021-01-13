@@ -13,10 +13,10 @@
         sendError(400, "User id is not set", __LINE__);
     }
 
-    // if(!isset($_SESSION['name'])) {
-    //     sendError(400, "Session name is not set", __LINE__);
-    // }
-
+    if(!isset($_SESSION['name'])) {
+        sendError(400, "Session name is not set", __LINE__);
+    }
+    
     $q = $dbMaria->prepare('SELECT u.user_username, u.user_full_name, c.country_name, c.country_id, g.gender_name, g.gender_id
                             FROM users AS u 
                             JOIN countries AS c 
@@ -25,6 +25,8 @@
                             ON g.gender_id=u.user_gender_fk 
                             WHERE u.user_id=:user_id
                             LIMIT 1');
+
+    // $q = $dbMaria->prepare('CALL getLookups(:user_id)');
 
     $q->bindValue(':user_id', $_GET['id']);
     $q->execute();

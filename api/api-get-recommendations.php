@@ -11,9 +11,9 @@ try {
     $statement = new ArangoStatement(
         $dbArango,
         [
-            'query' => 'FOR vertex IN 0..3 OUTBOUND @userId
+            'query' => 'FOR vertex IN 1..2 OUTBOUND @userId
                         GRAPH "twitterFollowersGraph" 
-                        FILTER vertex._key != @userKey RETURN vertex',
+                        FILTER vertex._key != @userKey RETURN DISTINCT vertex',
             'bindVars' => [
                 'userId' => 'twitterUsersV2/'.$_GET['userId'],
                 'userKey' => $_GET['userId']

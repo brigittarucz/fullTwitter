@@ -2,8 +2,9 @@
 
 session_start();
 
-// Comment these lines in production
-// $_SESSION['id'] = 12;
+// Comment this line with Postman
+// $_SESSION['id'] = 5; // rihanna
+// $_SESSION['id'] = 3; // anonymous
 
 // API may fail without image set
 
@@ -43,8 +44,6 @@ try {
     $oDataUserSession = $cursorGetUserSession->getAll();
 
     try {
-
-        // TODO: check if conversation exists
 
         try {
             $statementGetChatId = new ArangoStatement(
@@ -154,8 +153,8 @@ try {
 
         // TODO: add last message of chat in both users
 
-        $apiMessagingResponse["lastMessageSenderSaved"] = updateLastMessage($dbArango, $_SESSION['id'], $_POST['receiverId']);
-        $apiMessagingResponse["lastMessageReceiverSaved"] = updateLastMessage($dbArango, $_POST['receiverId'], $_SESSION['id'], "Receiver");
+        $apiMessagingResponse["lastMessageSenderSaved"] = updateLastMessage($dbArango, $_SESSION['id'], $_POST['receiverId'], $_POST['receiverImage']);
+        $apiMessagingResponse["lastMessageReceiverSaved"] = updateLastMessage($dbArango, $_POST['receiverId'], $_SESSION['id'], $oDataUserSession[0]->profileImage);
 
         // TODO: send to client & refresh
 
@@ -217,7 +216,7 @@ function sendError($iResponseCode, $sMessage, $iLine){
     exit();
 }
 
-function updateLastMessage($db, $senderId, $receiverId) {
+function updateLastMessage($db, $senderId, $receiverId, $image) {
 
     try {
         $statementGetUserChat = new ArangoStatement(
@@ -241,7 +240,7 @@ function updateLastMessage($db, $senderId, $receiverId) {
                 $date = new DateTime();
                 $date = $date->format('Y-m-d H:i:s');
                 $userChats[$index]["lastMessageDate"] = $date;
-                $userChats[$index]["receiverImage"] = $_POST['receiverImage'];
+                $userChats[$index]["receiverImage"] = $image;
 
                 try {
                     $statementUpdateUserChat = new ArangoStatement(
