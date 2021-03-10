@@ -8,6 +8,8 @@
 
     // Comment in production
     // $_GET['id'] = 15;
+    
+    session_start();
 
     if(!isset($_GET['id'])) {
         sendError(400, "User id is not set", __LINE__);
